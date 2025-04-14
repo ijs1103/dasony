@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "309434037613",
+    "project_id": "safe-signal-4e991",
+    "storage_bucket": "safe-signal-4e991.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:309434037613:android:e184c53945a38d65b89664",
+        "android_client_info": {
+          "package_name": "com.dasony.rn"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0vYQG-mpW0Ss0u81dpiOOvfFoEaiPISI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
