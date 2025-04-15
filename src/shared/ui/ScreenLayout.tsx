@@ -1,11 +1,15 @@
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet, View, Platform } from 'react-native';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 import BackActionNavBar from './NavigationBars/BackActionNavBar';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#EFF1F4',
   },
   body: {
     flex: 1,
@@ -19,10 +23,16 @@ interface Props {
 
 const ScreenLayout = ({ children, title }: Props) => {
   const { canGoBack } = useNavigation();
+  const insets = useSafeAreaInsets();
+  const tabBarHeight = Platform.OS === 'ios' ? 49 : 56;
+  const bottomPadding = tabBarHeight + insets.bottom;
+
   return (
     <SafeAreaView style={styles.container}>
       {canGoBack() && title && <BackActionNavBar title={title} />}
-      <View style={styles.body}>{children}</View>
+      <View style={[styles.body, { paddingBottom: bottomPadding }]}>
+        {children}
+      </View>
     </SafeAreaView>
   );
 };

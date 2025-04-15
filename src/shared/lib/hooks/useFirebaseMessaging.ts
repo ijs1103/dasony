@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import messaging from '@react-native-firebase/messaging';
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
 
 export const useFirebaseMessaging = () => {
   const [fcmToken, setFcmToken] = useState<string | null>(null);
@@ -27,9 +27,16 @@ export const useFirebaseMessaging = () => {
     };
 
     const getFcmToken = async () => {
-      const token = await messaging().getToken();
-      setFcmToken(token);
-      console.log('FCM Token:', token);
+      try {
+        if (Platform.OS === 'ios') {
+          await messaging().registerDeviceForRemoteMessages();
+        }
+        const token = await messaging().getToken();
+        setFcmToken(token);
+        console.log('FCM Token:', token);
+      } catch (error) {
+        console.log('FCM 토큰 가져오기 실패:', error);
+      }
     };
     // 포그라운드
     const unsubscribe = messaging().onMessage(async remoteMessage => {
