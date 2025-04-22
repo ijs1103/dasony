@@ -14,9 +14,10 @@ const styles = StyleSheet.create({
 
 interface Props {
   children: React.ReactNode;
+  refreshControl?: React.ReactElement;
 }
 
-const ScrollViewLayout = ({ children }: Props) => {
+const ScrollViewLayout = ({ children, refreshControl }: Props) => {
   const insets = useSafeAreaInsets();
   const tabBarHeight = Platform.OS === 'ios' ? 49 : 56;
   const bottomPadding = tabBarHeight + insets.bottom;
@@ -27,7 +28,8 @@ const ScrollViewLayout = ({ children }: Props) => {
         style={styles.body}
         contentContainerStyle={{
           paddingBottom: bottomPadding,
-        }}>
+        }}
+        refreshControl={refreshControl}>
         {children}
       </ScrollView>
     </SafeAreaView>

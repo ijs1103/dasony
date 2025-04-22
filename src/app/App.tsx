@@ -21,6 +21,8 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useEffect } from 'react';
 import SplashScreen from 'react-native-splash-screen';
 import Toast from 'react-native-toast-message';
+import { QueryProvider } from '@/shared/utils/queryprovider';
+import { TokenManager } from '@/features/auth/model/TokenManager';
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: NavigationDefaultTheme,
@@ -55,18 +57,20 @@ const App = () => {
       SplashScreen.hide();
     }, 1000);
   };
-
   return (
-    <SafeAreaProvider>
-      <PaperProvider theme={paperTheme}>
-        <NavigationContainer theme={paperTheme}>
-          <>
-            {isLoggedIn ? <RootNavigation /> : <AuthStackNavigator />}
-            <Toast />
-          </>
-        </NavigationContainer>
-      </PaperProvider>
-    </SafeAreaProvider>
+    <QueryProvider>
+      <SafeAreaProvider>
+        <PaperProvider theme={paperTheme}>
+          <NavigationContainer theme={paperTheme}>
+            <>
+              {isLoggedIn ? <RootNavigation /> : <AuthStackNavigator />}
+              <TokenManager />
+              <Toast />
+            </>
+          </NavigationContainer>
+        </PaperProvider>
+      </SafeAreaProvider>
+    </QueryProvider>
   );
 };
 

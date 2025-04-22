@@ -1,80 +1,208 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Button, Icon } from 'react-native-paper';
+import { StyleSheet, Text, View, RefreshControl, Platform } from 'react-native';
+import { Button } from 'react-native-paper';
 import { useHomeStackNavigation } from '@/app/navigation/HomeStackNavigator';
 import MainTitleNavBar from '@/shared/ui/NavigationBars/MainTitleNavBar';
-import { useFirebaseMessaging } from '@/shared/lib/hooks/useFirebaseMessaging';
 import SeniorLabel from '@/features/senior/ui/SeniorLabel';
-import FrigeStatus from '@/features/frige/ui/FrigeStatus';
+import FrigeStatusView from '@/features/frige/ui/FrigeStatusView';
 import ReportLabel from '@/features/frige/ui/ReportLabel';
+import FrigeUsageView from '@/features/frige/ui/FrigeUsageView';
 import Divider from '@/shared/ui/Divider';
 import ScrollViewLayout from '@/shared/ui/ScrollViewLayout';
-import AlertIcon from '../../assets/Home/alert_icon.svg';
+import { useAll } from '@/features/device/model/useAll';
+import { useSeniors } from '@/features/senior/model/useSeniors';
+import { useState, useCallback, useEffect } from 'react';
+import { useDaily } from '@/features/device/model/useDaily';
+import { useWeekly } from '@/features/device/model/useWeekly';
+import useAuthStore from '@/shared/lib/stores/useAuthStore';
+import useLogout from '@/features/auth/model/useLogout';
+import showErrorToast from '@/shared/ui/ToastMessages/ErrorToast';
+import { FrigeStatus } from '@/features/frige/types/FrigeStatus';
+import { useSos } from '@/features/device/model/useSos';
+import { mapToFrigeStatus } from '@/features/device/lib/mapToFrigeStatus';
+import PowerStatusLabel from '@/features/device/ui/PowerStatusLabel';
+import YesorNoAlert from '@/shared/ui/YesorNoAlert';
+import useFrigeStatusStore from '@/features/frige/lib/stores/useFrigeStatusStore';
 
 const HomeScreen = () => {
   const navigation = useHomeStackNavigation();
-  useFirebaseMessaging();
+  const [refreshing, setRefreshing] = useState(false);
+  const [disabled, setDisabled] = useState(false);
+  const logoutMutation = useLogout();
+  const handleLogout = useAuthStore(state => state.handleLogout);
+  const serialCode = useAuthStore(state => state.serialCode) ?? '';
+  const isLifted = useFrigeStatusStore(state => state.isLifted);
+  const setIsLifted = useFrigeStatusStore(state => state.setIsLifted);
+
+  const navigateToNotification = async () => {
+    logoutMutation.mutate(undefined, {
+      onSuccess: () => {
+        handleLogout();
+      },
+      onError: () => {
+        return showErrorToast({ text: '로그아웃 실패' });
+      },
+    });
+  };
+  const {
+    data: deviceData,
+    isLoading: isAllLoading,
+    refetch: allRefetch,
+  } = useAll();
+  const {
+    data: dailyData,
+    isLoading: isDailyLoading,
+    refetch: dailyRefetch,
+  } = useDaily();
+  const {
+    data: weeklyData,
+    isLoading: isWeeklyLoading,
+    refetch: weeklyRefetch,
+  } = useWeekly();
+  const {
+    data: senior,
+    isLoading: isSeniorsLoading,
+    refetch: seniorRefetch,
+  } = useSeniors();
+  const {
+    data: sosData,
+    hasTodaySos,
+    isLoading: isSosLoading,
+    refetch: sosRefetch,
+  } = useSos();
+  const [frigeStatus, setFrigeStatus] = useState<FrigeStatus>('inactive');
+  useEffect(() => {
+    if (sosData && dailyData && deviceData) {
+      const newFrigeStatus = mapToFrigeStatus({
+        isLifted,
+        hasTodaySos,
+        dailyData,
+        deviceData,
+      });
+      setFrigeStatus(newFrigeStatus);
+    }
+  }, [isLifted, sosData, hasTodaySos, dailyData, deviceData]);
+
+  const [alertVisible, setAlertVisible] = useState(false);
+
+  const toggleAlertVisible = useCallback(() => {
+    setAlertVisible(prev => !prev);
+  }, []);
+  const onPressYes = useCallback(() => {
+    const now = new Date().toISOString();
+    setIsLifted(true, now);
+    setFrigeStatus('active');
+    setAlertVisible(prev => !prev);
+  }, [setIsLifted]);
+
+  const editNameHandler = useCallback(() => {
+    navigation.navigate('NameUpdateScreen');
+  }, []);
+
+  const editAddressHandler = useCallback(() => {
+    navigation.navigate('AddressUpdateScreen');
+  }, []);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await Promise.all([
+        allRefetch(),
+        dailyRefetch(),
+        weeklyRefetch(),
+        seniorRefetch(),
+        sosRefetch(),
+      ]);
+    } catch (error) {
+      console.log('데이터 새로고침 중 오류 발생:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [allRefetch, dailyRefetch, weeklyRefetch, seniorRefetch, sosRefetch]);
+
+  const isLoading =
+    isAllLoading ||
+    isDailyLoading ||
+    isWeeklyLoading ||
+    isSeniorsLoading ||
+    isSosLoading;
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>로딩 중...</Text>
+      </View>
+    );
+  }
+
   return (
-    <ScrollViewLayout>
+    <ScrollViewLayout
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }>
       <MainTitleNavBar
-        title="어르신 안전 지킴이 다소니"
-        navigateToNotification={() => {}}
+        title={`어르신 안전 지킴이 "다소니" (${serialCode})`}
+        navigateToNotification={navigateToNotification}
         navigateToSetting={() => {}}
       />
       <View style={styles.seniorContainer}>
         <View style={styles.hStack}>
           <View style={styles.seniorInfoContainer}>
             <View style={styles.labelContainer}>
-              <SeniorLabel type="name" />
-              <Text style={styles.seniorName}>{'김철수'}</Text>
+              <SeniorLabel type="name" editNameHandler={editNameHandler} />
+              <Text
+                style={styles.seniorName}
+                numberOfLines={1}
+                ellipsizeMode="tail">
+                {senior?.name ?? 'N/A'}
+              </Text>
             </View>
             <View style={styles.labelContainer}>
               <SeniorLabel type="power" />
-              <Text style={styles.powerStatus}>{'⦁ 정상'}</Text>
+              <PowerStatusLabel
+                powerStatus={deviceData?.power.powerStatus ?? 'N/A'}
+                batteryTime={deviceData?.power.batteryTime ?? 0}
+              />
             </View>
             <View style={styles.labelContainer}>
-              <SeniorLabel type="address" />
-              <Text>
-                {'⦁ 서울특별시 논현1동 555번길\n   건물명 e동 2048호'}
-              </Text>
+              <SeniorLabel
+                type="address"
+                editAddressHandler={editAddressHandler}
+              />
+              <Text>{senior?.address ?? 'N/A'}</Text>
             </View>
           </View>
-          <FrigeStatus type={'unused'} />
+          <FrigeStatusView status={frigeStatus} onPress={toggleAlertVisible} />
         </View>
-        <Button style={styles.memoButton} onPress={() => {}} mode="contained">
-          {'긴급 메모'}
-        </Button>
+        <View style={styles.memoButtonContainer}>
+          <Button style={styles.memoButton} onPress={() => {}} mode="contained">
+            {'긴급 메모'}
+          </Button>
+        </View>
       </View>
       <View style={styles.reportContainer}>
         <Text style={styles.report}>{'최근 리포트'}</Text>
         <View style={styles.detectionTimeContainer}>
           <ReportLabel type="detectionTime" />
-          <Text style={styles.detectionTime}>{'오전 11:40'}</Text>
+          <Text style={styles.detectionTime}>
+            {deviceData?.recentDetectionTime ?? 'N/A'}
+          </Text>
         </View>
         <View style={styles.statContainer}>
           <View style={styles.hStack2}>
-            <View
-              style={{
-                gap: 10,
-                alignSelf: 'flex-start',
-                flex: 1,
-                paddingLeft: 18,
-              }}>
+            <View style={styles.dailyTotalCountContainer}>
               <Text>오늘</Text>
               <Text style={styles.statCount}>
-                9<Text style={{ fontSize: 14 }}> 번</Text>
+                {dailyData?.dailyTotalCount}
+                <Text> 번</Text>
               </Text>
             </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                gap: 16,
-                flex: 1,
-              }}>
+            <View style={styles.weeklyStatContainer}>
               <Divider vertical />
               <View style={{ gap: 10 }}>
-                <Text>최근 7일 평균</Text>
+                <Text>이번 주 평균</Text>
                 <Text style={styles.statCount}>
-                  48<Text style={{ fontSize: 14 }}> 번</Text>
+                  {weeklyData?.weeklyAverage ?? 0}
+                  <Text> 번</Text>
                 </Text>
               </View>
             </View>
@@ -84,32 +212,32 @@ const HomeScreen = () => {
             textColor={'#fff'}
             onPress={() => {}}
             mode="contained">
-            {'일주일 누적 496번'}
+            {`일주일 누적 ${weeklyData?.weeklyTotalCount}번`}
           </Button>
         </View>
-        <View style={styles.usageContainer}>
-          <View style={styles.vStack}>
-            <View style={{ gap: 6 }}>
-              <ReportLabel type="usage" />
-              <Text style={styles.usageDescription}>최근 활동 없음</Text>
-            </View>
-            <TouchableOpacity onPress={() => {}} style={styles.cta}>
-              <Text>{'자세히 보기'}</Text>
-              <Icon source={'chevron-right'} size={23} />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.alertContainer}>
-            <AlertIcon />
-          </View>
-        </View>
+        <FrigeUsageView
+          usageStatus={deviceData?.usageStatus ?? '최근 활동 없음'}
+          onPress={() => {}}
+        />
       </View>
-      <Button
-        style={styles.reportButton}
-        textColor="#fff"
-        onPress={() => {}}
-        mode="contained">
-        {'기록 전체 보기'}
-      </Button>
+      <View style={styles.reportButtonContainer}>
+        <Button
+          style={[styles.reportButton, { opacity: disabled ? 0.5 : 1 }]}
+          textColor="#fff"
+          onPress={() => {}}
+          mode="contained"
+          disabled={disabled}>
+          {'기록 전체 보기'}
+        </Button>
+      </View>
+      <YesorNoAlert
+        visible={alertVisible}
+        onDismiss={toggleAlertVisible}
+        title={'알림'}
+        content={'현재 상태를 확인하였고 비상 상태를 해제하시겠습니까?'}
+        onPressYes={onPressYes}
+        onPressNo={toggleAlertVisible}
+      />
     </ScrollViewLayout>
   );
 };
@@ -126,6 +254,7 @@ const styles = StyleSheet.create({
   },
   hStack: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   hStack2: {
     flexDirection: 'row',
@@ -134,6 +263,8 @@ const styles = StyleSheet.create({
   seniorInfoContainer: {
     justifyContent: 'space-between',
     gap: 40,
+    flex: 1,
+    marginRight: 16,
   },
   labelContainer: {
     gap: 14,
@@ -141,27 +272,47 @@ const styles = StyleSheet.create({
   seniorName: {
     fontWeight: '700',
     fontSize: 23,
+    flexShrink: 1,
   },
-  powerStatus: {
+  powerOn: {
     color: '#10D75F',
+  },
+  powerOff: {
+    color: '#FF2727',
   },
   statusContainer: {
     flex: 1,
     gap: 24,
     alignItems: 'center',
   },
+  memoButtonContainer: {
+    ...Platform.select({
+      android: {
+        elevation: 8,
+        backgroundColor: '#fff',
+        borderRadius: 6,
+        marginTop: 16,
+        padding: 1,
+      },
+      ios: {
+        marginTop: 16,
+      },
+    }),
+  },
   memoButton: {
     borderRadius: 6,
     backgroundColor: '#fff',
-    marginTop: 16,
-    elevation: 2, // Android 그림자
-    shadowColor: '#000', // iOS 그림자
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+      },
+    }),
   },
   reportContainer: {
     marginTop: 28,
@@ -197,6 +348,17 @@ const styles = StyleSheet.create({
   weeklyButton: {
     backgroundColor: '#000',
   },
+  dailyTotalCountContainer: {
+    gap: 10,
+    alignSelf: 'flex-start',
+    flex: 1,
+    paddingLeft: 18,
+  },
+  weeklyStatContainer: {
+    flexDirection: 'row',
+    gap: 16,
+    flex: 1,
+  },
   statCount: {
     fontWeight: '700',
     fontSize: 23,
@@ -227,18 +389,40 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     paddingVertical: 36,
   },
+  reportButtonContainer: {
+    ...Platform.select({
+      android: {
+        elevation: 8,
+        backgroundColor: '#3182F6',
+        borderRadius: 6,
+        marginHorizontal: 18,
+        marginTop: 16,
+        padding: 1,
+      },
+      ios: {
+        marginHorizontal: 18,
+        marginTop: 16,
+      },
+    }),
+  },
   reportButton: {
-    marginHorizontal: 18,
     borderRadius: 6,
     backgroundColor: '#3182F6',
-    marginTop: 16,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+      },
+    }),
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

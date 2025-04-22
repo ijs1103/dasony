@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     paddingRight: 12,
   },
   titleText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '700',
   },
   hStack: {

@@ -1,9 +1,10 @@
-import AddressSearchScreen from '@/screens/AddressSearchScreen';
+import AddressUpdateScreen from '@/screens/AddressUpdateScreen';
 import AlbumScreen from '@/screens/AlbumScreen';
 import ChartScreen from '@/screens/ChartScreen';
 import HomeScreen from '@/screens/HomeScreen';
 import MessageCallScreen from '@/screens/MessageCallScreen';
 import ModalTestScreen from '@/screens/ModalTestScreen';
+import NameUpdateScreen from '@/screens/NameUpdateScreen';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import {
   createNativeStackNavigator,
@@ -16,7 +17,8 @@ const HomeStack = createNativeStackNavigator();
 type HomeStackParams = {
   HomeScreen: undefined;
   NotificationsScreen: undefined;
-  AddressSearchScreen: undefined;
+  AddressUpdateScreen: undefined;
+  NameUpdateScreen: undefined;
   ChartScreen: undefined;
   MessageCallScreen: undefined;
   ModalTestScreen: undefined;
@@ -42,9 +44,10 @@ export const HomeStackNavigator = () => {
         component={NotificationsScreen}
       />
       <HomeStack.Screen
-        name="AddressSearchScreen"
-        component={AddressSearchScreen}
+        name="AddressUpdateScreen"
+        component={AddressUpdateScreen}
       />
+      <HomeStack.Screen name="NameUpdateScreen" component={NameUpdateScreen} />
       <HomeStack.Screen name="ChartScreen" component={ChartScreen} />
       <HomeStack.Screen
         name="MessageCallScreen"

@@ -7,7 +7,12 @@ import { useTheme } from 'react-native-paper';
 
 const Tab = createBottomTabNavigator();
 
-const hideTabBarScreens = ['NotificationsScreen', 'ModalTestScreen'];
+const hideTabBarScreens = [
+  'NotificationsScreen',
+  'ModalTestScreen',
+  'AddressUpdateScreen',
+  'NameUpdateScreen',
+];
 
 const RootNavigation = () => {
   const theme = useTheme();

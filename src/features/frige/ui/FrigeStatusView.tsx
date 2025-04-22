@@ -1,52 +1,69 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { Chip } from 'react-native-paper';
+import { StyleSheet, View } from 'react-native';
+import { Button, Chip } from 'react-native-paper';
 import SosButton from '../../../../assets/Home/sos_button.svg';
 import ClosedFrige from '../../../../assets/Home/closed_frige.svg';
 import OpenedFrige from '../../../../assets/Home/opened_frige.svg';
 import UnusedDevice from '../../../../assets/Home/unused_device.svg';
+import { FrigeStatus } from '../types/FrigeStatus';
 
 interface Props {
-  type: 'emergency' | 'closed' | 'opened' | 'unused';
+  status: FrigeStatus;
+  onPress: () => void;
 }
 
-const FrigeStatus = ({ type }: Props) => {
+const FrigeStatusView = ({ status, onPress }: Props) => {
   return (
     <View style={styles.container}>
-      {type === 'emergency' && (
+      {status === 'emergency' && (
         <>
           <Chip
             style={{ backgroundColor: '#C32E1F' }}
-            textStyle={{ color: '#F9F9FB' }}>
+            textStyle={{ color: '#F9F9FB' }}
+            mode="flat">
             {'긴급 이슈'}
           </Chip>
           <SosButton />
+          <Button
+            onPress={onPress}
+            style={{
+              borderRadius: 6,
+              paddingHorizontal: 20,
+            }}
+            mode="contained"
+            buttonColor="#448DF6"
+            textColor="#fff">
+            {'확인해제'}
+          </Button>
         </>
       )}
-      {type === 'closed' && (
+      {status === 'inactive' && (
         <>
           <Chip
             style={{ backgroundColor: '#000' }}
-            textStyle={{ color: '#F9F9FB' }}>
-            {'문닫힘'}
+            textStyle={{ color: '#F9F9FB' }}
+            mode="flat">
+            {'오늘 동작없음'}
           </Chip>
           <ClosedFrige />
         </>
       )}
-      {type === 'opened' && (
+      {status === 'active' && (
         <>
           <Chip
             style={{ backgroundColor: '#878BFF' }}
-            textStyle={{ color: '#F9F9FB' }}>
-            {'문열림'}
+            textStyle={{ color: '#F9F9FB' }}
+            mode="flat">
+            {'사용감지됨'}
           </Chip>
           <OpenedFrige />
         </>
       )}
-      {type === 'unused' && (
+      {status === 'unused' && (
         <>
           <Chip
             style={{ backgroundColor: '#9F9F9F' }}
-            textStyle={{ color: '#F9F9FB' }}>
+            textStyle={{ color: '#F9F9FB' }}
+            mode="flat">
             {'장시간 미사용'}
           </Chip>
           <UnusedDevice />
@@ -56,7 +73,7 @@ const FrigeStatus = ({ type }: Props) => {
   );
 };
 
-export default FrigeStatus;
+export default FrigeStatusView;
 
 const styles = StyleSheet.create({
   container: {
