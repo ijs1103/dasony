@@ -36,6 +36,7 @@ export const useAll = () => {
     },
     select: data => {
       return {
+        rawData: data,
         power: getPowerStatus(data),
         usageStatus: getUsageStatus(data),
         recentDetectionTime: getRecentDetectionTime(data),

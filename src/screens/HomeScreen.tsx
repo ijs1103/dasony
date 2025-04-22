@@ -22,11 +22,12 @@ import { mapToFrigeStatus } from '@/features/device/lib/mapToFrigeStatus';
 import PowerStatusLabel from '@/features/device/ui/PowerStatusLabel';
 import YesorNoAlert from '@/shared/ui/YesorNoAlert';
 import useFrigeStatusStore from '@/features/frige/lib/stores/useFrigeStatusStore';
+import LoadingView from '@/shared/ui/LoadingView';
+import SubmitButton from '@/shared/ui/SubmitButton';
 
 const HomeScreen = () => {
   const navigation = useHomeStackNavigation();
   const [refreshing, setRefreshing] = useState(false);
-  const [disabled, setDisabled] = useState(false);
   const logoutMutation = useLogout();
   const handleLogout = useAuthStore(state => state.handleLogout);
   const serialCode = useAuthStore(state => state.serialCode) ?? '';
@@ -102,6 +103,10 @@ const HomeScreen = () => {
     navigation.navigate('AddressUpdateScreen');
   }, []);
 
+  const navigateToReport = useCallback(() => {
+    navigation.navigate('ReportScreen');
+  }, []);
+
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
@@ -127,11 +132,7 @@ const HomeScreen = () => {
     isSosLoading;
 
   if (isLoading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Text>로딩 중...</Text>
-      </View>
-    );
+    return <LoadingView />;
   }
 
   return (
@@ -220,16 +221,7 @@ const HomeScreen = () => {
           onPress={() => {}}
         />
       </View>
-      <View style={styles.reportButtonContainer}>
-        <Button
-          style={[styles.reportButton, { opacity: disabled ? 0.5 : 1 }]}
-          textColor="#fff"
-          onPress={() => {}}
-          mode="contained"
-          disabled={disabled}>
-          {'기록 전체 보기'}
-        </Button>
-      </View>
+      <SubmitButton title="기록 전체 보기" onPress={navigateToReport} />
       <YesorNoAlert
         visible={alertVisible}
         onDismiss={toggleAlertVisible}
@@ -388,41 +380,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#f6f6f8',
     paddingHorizontal: 32,
     paddingVertical: 36,
-  },
-  reportButtonContainer: {
-    ...Platform.select({
-      android: {
-        elevation: 8,
-        backgroundColor: '#3182F6',
-        borderRadius: 6,
-        marginHorizontal: 18,
-        marginTop: 16,
-        padding: 1,
-      },
-      ios: {
-        marginHorizontal: 18,
-        marginTop: 16,
-      },
-    }),
-  },
-  reportButton: {
-    borderRadius: 6,
-    backgroundColor: '#3182F6',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-      },
-    }),
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });
