@@ -1,4 +1,12 @@
-import { StyleSheet, Text, View } from 'react-native';
+import {
+  Alert,
+  Linking,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { useCallback, useEffect, useState } from 'react';
 import { Button, TextInput } from 'react-native-paper';
 import { Controller, useForm } from 'react-hook-form';
@@ -12,6 +20,10 @@ import { useFirebaseMessaging } from '@/shared/lib/hooks/useFirebaseMessaging';
 import { LoginRequest, LoginResponse } from '@/features/auth/types/login';
 import Spacer from '@/shared/ui/Spacer';
 import { FORM_ERROR_MESSAGE, REGEX } from '@/shared/utils/constants';
+import usePermissions from '@/shared/lib/hooks/usePermissions';
+import ScreenLayout from '@/shared/ui/ScreenLayout';
+import FormInput from '@/shared/ui/FormInput';
+import SubmitButton from '@/shared/ui/SubmitButton';
 
 interface IForm {
   phoneNumber: string;
@@ -37,6 +49,8 @@ const LoginScreen = () => {
       setIsFcmTokenReady(true);
     }
   }, [fcmToken]);
+
+  usePermissions();
 
   const {
     control,
@@ -87,40 +101,31 @@ const LoginScreen = () => {
   }, [navigation]);
 
   return (
-    <KeyboardAvoidingLayout>
-      <View style={styles.container}>
-        <View style={styles.logoContainer}>
-          <Text>{'로고'}</Text>
-        </View>
-        <View style={styles.bottomSheet}>
-          <Text style={styles.label}>로그인</Text>
-          <Spacer size={57} />
+    <ScreenLayout isLogin>
+      <KeyboardAvoidingLayout>
+        <View style={styles.subContainer}>
           <View style={styles.formContainer}>
-            <Controller
+            <FormInput
               control={control}
+              name="phoneNumber"
+              label="보호자 핸드폰번호"
+              labelColor={'#000'}
+              placeholder="- 빼고 입력"
               rules={{
                 required: true,
+                pattern: {
+                  value: REGEX.PHONE_NUMBER,
+                  message: FORM_ERROR_MESSAGE.PHONE_NUMBER,
+                },
               }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  style={styles.textInput}
-                  placeholder="휴대폰번호를 입력해 주세요."
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  autoCapitalize="none"
-                />
-              )}
-              name="phoneNumber"
+              maxLength={11}
             />
-            {errors.phoneNumber?.message && (
-              <Text style={styles.errorMessage}>
-                {errors.phoneNumber?.message}
-              </Text>
-            )}
-            <Spacer size={22} />
-            <Controller
+            <FormInput
               control={control}
+              name="serialCode"
+              label="기기 일련번호"
+              labelColor={'#000'}
+              placeholder="6자리 숫자 입력"
               rules={{
                 required: true,
                 pattern: {
@@ -128,84 +133,38 @@ const LoginScreen = () => {
                   message: FORM_ERROR_MESSAGE.SERIALCODE,
                 },
               }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  style={styles.textInput}
-                  placeholder="일련번호를 입력해 주세요."
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  autoCapitalize="none"
-                  maxLength={6}
-                />
-              )}
-              name="serialCode"
+              maxLength={6}
             />
-            {errors.serialCode?.message && (
-              <Text style={styles.errorMessage}>
-                {errors.serialCode?.message}
-              </Text>
-            )}
-            <Spacer size={30} />
-            <Button
-              onPress={handleSubmit(onValid)}
-              disabled={!isValid || !isFcmTokenReady}
-              mode="outlined">
-              {'로그인'}
-            </Button>
-            <Spacer size={20} />
-            <Button onPress={navigateToSignup} mode="outlined">
-              {'회원가입'}
-            </Button>
+            <TouchableOpacity onPress={navigateToSignup}>
+              <Text style={styles.signupButton}>{'회원가입'}</Text>
+            </TouchableOpacity>
           </View>
+          <SubmitButton
+            title="로그인"
+            onPress={handleSubmit(onValid)}
+            disabled={!isValid}
+          />
         </View>
-      </View>
-    </KeyboardAvoidingLayout>
+      </KeyboardAvoidingLayout>
+    </ScreenLayout>
   );
 };
 
 export default LoginScreen;
 
 const styles = StyleSheet.create({
-  container: {
+  subContainer: {
     flex: 1,
-    backgroundColor: '#FBBC0C',
-    alignItems: 'center',
-  },
-  logoContainer: {
-    height: '40%',
-    justifyContent: 'center',
-  },
-  bottomSheet: {
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    backgroundColor: '#fff',
-    height: '60%',
-    paddingHorizontal: 39,
-    paddingVertical: 59,
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-  },
-  label: {
-    fontSize: 20,
-    color: '#19181B',
+    justifyContent: 'space-between',
   },
   formContainer: {
-    paddingHorizontal: 10,
-    alignItems: 'center',
+    paddingHorizontal: 18,
+    marginTop: 40,
+    gap: 16,
   },
-  textInput: {
-    width: 300,
-    color: '#C7BBAB',
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-    borderBottomWidth: 1,
-    borderBottomColor: '#C0B4B2',
-  },
-  errorMessage: {
-    color: 'red',
-    marginTop: 10,
+  signupButton: {
+    color: '#000',
+    fontWeight: '600',
+    textAlign: 'right',
   },
 });

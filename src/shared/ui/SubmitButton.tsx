@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
     }),
   },
   reportButton: {
+    padding: 4,
     borderRadius: 6,
     backgroundColor: '#3182F6',
     ...Platform.select({

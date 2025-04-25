@@ -5,6 +5,7 @@ import {
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 import BackActionNavBar from './NavigationBars/BackActionNavBar';
+import LoginTitleNavBar from './NavigationBars/LoginTitleNavBar';
 
 const styles = StyleSheet.create({
   container: {
@@ -19,9 +20,10 @@ const styles = StyleSheet.create({
 interface Props {
   children: React.ReactNode;
   title?: string;
+  isLogin?: boolean;
 }
 
-const ScreenLayout = ({ children, title }: Props) => {
+const ScreenLayout = ({ children, title, isLogin }: Props) => {
   const { canGoBack } = useNavigation();
   const insets = useSafeAreaInsets();
   const tabBarHeight = Platform.OS === 'ios' ? 49 : 56;
@@ -29,6 +31,7 @@ const ScreenLayout = ({ children, title }: Props) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {isLogin && <LoginTitleNavBar />}
       {canGoBack() && title && <BackActionNavBar title={title} />}
       <View style={[styles.body, { paddingBottom: bottomPadding }]}>
         {children}

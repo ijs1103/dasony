@@ -32,8 +32,6 @@ import YesorNoAlert from '@/shared/ui/YesorNoAlert';
 import useFrigeStatusStore from '@/features/frige/lib/stores/useFrigeStatusStore';
 import LoadingView from '@/shared/ui/LoadingView';
 import SubmitButton from '@/shared/ui/SubmitButton';
-import usePermissionStore from '@/shared/lib/stores/usePermissionStore';
-import usePermissions from '@/shared/lib/hooks/usePermissions';
 
 const HomeScreen = () => {
   const navigation = useHomeStackNavigation();
@@ -43,41 +41,6 @@ const HomeScreen = () => {
   const serialCode = useAuthStore(state => state.serialCode) ?? '';
   const isLifted = useFrigeStatusStore(state => state.isLifted);
   const setIsLifted = useFrigeStatusStore(state => state.setIsLifted);
-  const { updateAllGranted, isCompleted } = usePermissions();
-  const { isAllGranted } = usePermissionStore();
-
-  const openAppSettings = useCallback(() => {
-    if (Platform.OS === 'ios') {
-      Linking.openURL('app-settings:');
-    } else {
-      Linking.openSettings();
-    }
-  }, []);
-
-  useEffect(() => {
-    const checkPermissions = async () => {
-      await updateAllGranted();
-    };
-    checkPermissions();
-    if (!isAllGranted && isCompleted) {
-      Alert.alert(
-        '권한 허용',
-        '정상적인 앱 사용을 위해 모든 권한을 허용해주세요.',
-        [
-          {
-            text: '취소',
-            style: 'cancel',
-          },
-          {
-            text: '확인',
-            onPress: () => {
-              openAppSettings();
-            },
-          },
-        ],
-      );
-    }
-  }, [isCompleted]);
 
   const navigateToNotification = async () => {
     logoutMutation.mutate(undefined, {

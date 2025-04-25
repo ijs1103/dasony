@@ -8,6 +8,7 @@ interface FormInputProps<T extends FieldValues> {
   placeholder: string;
   rules?: object;
   maxLength?: number;
+  labelColor?: string;
 }
 
 const FormInput = <T extends FieldValues>({
@@ -17,10 +18,14 @@ const FormInput = <T extends FieldValues>({
   placeholder,
   rules,
   maxLength,
+  labelColor,
 }: FormInputProps<T>) => {
   return (
     <>
-      <Text style={styles.label}>{label}</Text>
+      <Text
+        style={[styles.label, { color: labelColor ? labelColor : '#3C63B3' }]}>
+        {label}
+      </Text>
       <Controller
         control={control}
         rules={rules}
@@ -56,13 +61,12 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 17,
     fontWeight: '700',
-    color: '#3C63B3',
   },
   textInput: {
     borderColor: '#2752AB',
     borderWidth: 1,
     borderRadius: 8,
-    padding: 16,
+    padding: 10,
   },
   errorMessage: {
     color: 'red',
