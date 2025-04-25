@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Button, TextInput } from 'react-native-paper';
 import { Controller, useForm } from 'react-hook-form';
 import KeyboardAvoidingLayout from '@/shared/ui/KeyboardAvoidingLayout';
@@ -19,7 +19,7 @@ interface IForm {
 }
 
 const LoginScreen = () => {
-  const authStackNavigation = useAuthStackNavigation();
+  const navigation = useAuthStackNavigation();
   const loginMutation = useLogin();
   const {
     handleLogin,
@@ -29,6 +29,15 @@ const LoginScreen = () => {
     setSerialCode,
   } = useAuthStore();
   const { fcmToken } = useFirebaseMessaging();
+  const [isFcmTokenReady, setIsFcmTokenReady] = useState(false);
+
+  // FCM 토큰이 준비되었는지 확인
+  useEffect(() => {
+    if (fcmToken) {
+      setIsFcmTokenReady(true);
+    }
+  }, [fcmToken]);
+
   const {
     control,
     handleSubmit,
@@ -38,7 +47,9 @@ const LoginScreen = () => {
   const onValid = useCallback(
     ({ phoneNumber, serialCode }: IForm) => {
       if (!fcmToken) {
-        return showErrorToast({ text: 'fcm 토큰 없음' });
+        return showErrorToast({
+          text: 'FCM 토큰이 아직 준비되지 않았습니다. 잠시 후 다시 시도해주세요.',
+        });
       }
       const loginData: LoginRequest = { phoneNumber, serialCode, fcmToken };
       const onHide = (response: LoginResponse) => {
@@ -60,12 +71,21 @@ const LoginScreen = () => {
         },
       });
     },
-    [fcmToken],
+    [
+      fcmToken,
+      handleLogin,
+      loginMutation,
+      setAccessToken,
+      setFcmToken,
+      setRefreshToken,
+      setSerialCode,
+    ],
   );
 
   const navigateToSignup = useCallback(() => {
-    //authStackNavigation.navigate('SignUp');
-  }, []);
+    navigation.navigate('SignUpScreen');
+  }, [navigation]);
+
   return (
     <KeyboardAvoidingLayout>
       <View style={styles.container}>
@@ -129,15 +149,12 @@ const LoginScreen = () => {
             <Spacer size={30} />
             <Button
               onPress={handleSubmit(onValid)}
-              disabled={!isValid}
+              disabled={!isValid || !isFcmTokenReady}
               mode="outlined">
               {'로그인'}
             </Button>
             <Spacer size={20} />
-            <Button
-              onPress={navigateToSignup}
-              disabled={!isValid}
-              mode="outlined">
+            <Button onPress={navigateToSignup} mode="outlined">
               {'회원가입'}
             </Button>
           </View>

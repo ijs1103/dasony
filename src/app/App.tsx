@@ -45,9 +45,7 @@ const App = () => {
   const isDarkTheme = useThemeStore(state => state.isDarkTheme);
   const paperTheme = isDarkTheme ? CombinedDarkTheme : CombinedLightTheme;
   const isLoggedIn = useAuthStore(state => state.isLoggedIn);
-  useEffect(() => {
-    initializeApp();
-  }, []);
+
   const initializeApp = () => {
     GoogleSignin.configure({
       iosClientId: process.env.iOS_CLIENT_ID,
@@ -57,6 +55,11 @@ const App = () => {
       SplashScreen.hide();
     }, 1000);
   };
+
+  useEffect(() => {
+    initializeApp();
+  }, []);
+
   return (
     <QueryProvider>
       <SafeAreaProvider>

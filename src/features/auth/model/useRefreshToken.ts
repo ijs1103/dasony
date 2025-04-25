@@ -16,7 +16,6 @@ export const refreshToken = async (
     },
     body: JSON.stringify(data),
   });
-  console.log('')
 
   if (!response.ok) {
     throw new Error('Refresh failed');

@@ -1,4 +1,12 @@
-import { StyleSheet, Text, View, RefreshControl, Platform } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  RefreshControl,
+  Platform,
+  Linking,
+  Alert,
+} from 'react-native';
 import { Button } from 'react-native-paper';
 import { useHomeStackNavigation } from '@/app/navigation/HomeStackNavigator';
 import MainTitleNavBar from '@/shared/ui/NavigationBars/MainTitleNavBar';
@@ -24,6 +32,8 @@ import YesorNoAlert from '@/shared/ui/YesorNoAlert';
 import useFrigeStatusStore from '@/features/frige/lib/stores/useFrigeStatusStore';
 import LoadingView from '@/shared/ui/LoadingView';
 import SubmitButton from '@/shared/ui/SubmitButton';
+import usePermissionStore from '@/shared/lib/stores/usePermissionStore';
+import usePermissions from '@/shared/lib/hooks/usePermissions';
 
 const HomeScreen = () => {
   const navigation = useHomeStackNavigation();
@@ -33,6 +43,41 @@ const HomeScreen = () => {
   const serialCode = useAuthStore(state => state.serialCode) ?? '';
   const isLifted = useFrigeStatusStore(state => state.isLifted);
   const setIsLifted = useFrigeStatusStore(state => state.setIsLifted);
+  const { updateAllGranted, isCompleted } = usePermissions();
+  const { isAllGranted } = usePermissionStore();
+
+  const openAppSettings = useCallback(() => {
+    if (Platform.OS === 'ios') {
+      Linking.openURL('app-settings:');
+    } else {
+      Linking.openSettings();
+    }
+  }, []);
+
+  useEffect(() => {
+    const checkPermissions = async () => {
+      await updateAllGranted();
+    };
+    checkPermissions();
+    if (!isAllGranted && isCompleted) {
+      Alert.alert(
+        '권한 허용',
+        '정상적인 앱 사용을 위해 모든 권한을 허용해주세요.',
+        [
+          {
+            text: '취소',
+            style: 'cancel',
+          },
+          {
+            text: '확인',
+            onPress: () => {
+              openAppSettings();
+            },
+          },
+        ],
+      );
+    }
+  }, [isCompleted]);
 
   const navigateToNotification = async () => {
     logoutMutation.mutate(undefined, {
@@ -225,8 +270,10 @@ const HomeScreen = () => {
       <YesorNoAlert
         visible={alertVisible}
         onDismiss={toggleAlertVisible}
-        title={'알림'}
-        content={'현재 상태를 확인하였고 비상 상태를 해제하시겠습니까?'}
+        title={'활동 확인'}
+        content={
+          '활동을 확인하면 사용량 감지를 정상으로 전환합니다. 대상자의 활동 확인을 진행하시겠습니까?'
+        }
         onPressYes={onPressYes}
         onPressNo={toggleAlertVisible}
       />

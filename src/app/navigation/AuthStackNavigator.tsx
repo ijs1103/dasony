@@ -1,4 +1,6 @@
 import LoginScreen from '@/screens/LoginScreen';
+import SeniorSignUpScreen from '@/screens/SeniorSignUpScreen';
+import SignUpScreen from '@/screens/SignUpScreen';
 import SocailLoginScreen from '@/screens/SocailLoginScreen';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import {
@@ -11,6 +13,8 @@ const AuthStack = createNativeStackNavigator();
 type AuthStackParams = {
   LoginScreen: undefined;
   SocailLoginScreen: undefined;
+  SignUpScreen: undefined;
+  SeniorSignUpScreen: undefined;
 };
 
 export const useAuthStackNavigation = <
@@ -27,6 +31,8 @@ export const AuthStackNavigator = () => {
         headerShown: false,
       }}>
       <AuthStack.Screen name="LoginScreen" component={LoginScreen} />
+      <AuthStack.Screen name="SignUpScreen" component={SignUpScreen} />
+      <AuthStack.Screen name="SeniorSignUpScreen" component={SeniorSignUpScreen} />
       <AuthStack.Screen
         name="SocailLoginScreen"
         component={SocailLoginScreen}

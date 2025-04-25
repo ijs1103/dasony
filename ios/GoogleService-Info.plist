@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>org.reactjs.native.ex.AwesomeProject</string>
+	<string>com.dasony.ios</string>
 	<key>PROJECT_ID</key>
 	<string>safe-signal-4e991</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:309434037613:ios:1324086c14a949fbb89664</string>
+	<string>1:309434037613:ios:f12717263f164fdeb89664</string>
 </dict>
 </plist>

@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { AppState } from 'react-native';
 import useAuthStore from '@/shared/lib/stores/useAuthStore';
 import { useRefreshToken } from './useRefreshToken';
+import usePermissionStore from '@/shared/lib/stores/usePermissionStore';
 
 export const TokenManager = () => {
   const appState = useRef(AppState.currentState);
@@ -15,6 +16,7 @@ export const TokenManager = () => {
     setRefreshToken,
     handleLogout: logout,
   } = useAuthStore();
+  const { isAllGranted } = usePermissionStore();
   const { mutate } = useRefreshToken();
 
   const startTokenValidation = () => {
@@ -39,8 +41,19 @@ export const TokenManager = () => {
     }
 
     const refreshAccessToken = () => {
+      // 권한이 모두 허용되지 않은 경우에는 토큰 갱신을 시도하지 않음
+      if (!isAllGranted) {
+        console.log('권한이 모두 허용되지 않아 토큰 갱신을 건너뜁니다.');
+        return;
+      }
+
       if (!fcmToken) {
         console.log('There is no fcmToken');
+        // FCM 토큰이 없을 때 바로 로그아웃하지 않고 권한 상태를 확인
+        if (!isAllGranted) {
+          console.log('권한이 모두 허용되지 않아 로그아웃을 건너뜁니다.');
+          return;
+        }
         logout();
         return;
       }
@@ -92,6 +105,6 @@ export const TokenManager = () => {
         clearInterval(validateInterval.current);
       }
     };
-  }, [isLoggedIn, refreshToken]);
+  }, [isLoggedIn, refreshToken, isAllGranted]);
   return null;
 };
