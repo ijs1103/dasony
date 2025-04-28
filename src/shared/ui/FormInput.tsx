@@ -1,14 +1,16 @@
-import { StyleSheet, Text, TextInput } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput } from 'react-native';
 import { Control, Controller, FieldValues, Path } from 'react-hook-form';
 
 interface FormInputProps<T extends FieldValues> {
   control: Control<T>;
   name: Path<T>;
-  label: string;
+  label?: string;
   placeholder: string;
   rules?: object;
   maxLength?: number;
   labelColor?: string;
+  onPress?: () => void;
+  editable?: boolean;
 }
 
 const FormInput = <T extends FieldValues>({
@@ -19,13 +21,20 @@ const FormInput = <T extends FieldValues>({
   rules,
   maxLength,
   labelColor,
+  onPress,
+  editable = true,
 }: FormInputProps<T>) => {
   return (
-    <>
-      <Text
-        style={[styles.label, { color: labelColor ? labelColor : '#3C63B3' }]}>
-        {label}
-      </Text>
+    <Pressable style={styles.container} onPress={onPress}>
+      {label && (
+        <Text
+          style={[
+            styles.label,
+            { color: labelColor ? labelColor : '#3C63B3' },
+          ]}>
+          {label}
+        </Text>
+      )}
       <Controller
         control={control}
         rules={rules}
@@ -43,6 +52,7 @@ const FormInput = <T extends FieldValues>({
               value={value}
               autoCapitalize="none"
               maxLength={maxLength}
+              editable={editable}
             />
             {error?.message && (
               <Text style={styles.errorMessage}>{error.message}</Text>
@@ -51,13 +61,16 @@ const FormInput = <T extends FieldValues>({
         )}
         name={name}
       />
-    </>
+    </Pressable>
   );
 };
 
 export default FormInput;
 
 const styles = StyleSheet.create({
+  container: {
+    gap: 16,
+  },
   label: {
     fontSize: 17,
     fontWeight: '700',
@@ -67,6 +80,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     padding: 10,
+    color: '#000',
   },
   errorMessage: {
     color: 'red',

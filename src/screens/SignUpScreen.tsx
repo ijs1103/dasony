@@ -5,13 +5,14 @@ import { FORM_ERROR_MESSAGE, REGEX } from '@/shared/utils/constants';
 import SubmitButton from '@/shared/ui/SubmitButton';
 import FormInput from '@/shared/ui/FormInput';
 import { useSignup } from '@/features/auth/model/useSignup';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import showErrorToast from '@/shared/ui/ToastMessages/ErrorToast';
 import { useAuthStackNavigation } from '@/app/navigation/AuthStackNavigator';
 import KeyboardAvoidingLayout from '@/shared/ui/KeyboardAvoidingLayout';
 import useAuthStore from '@/shared/lib/stores/useAuthStore';
 import showSuccessToast from '@/shared/ui/ToastMessages/SuccessToast';
 import { useValidateSerialCode } from '@/features/device/model/useValidateSerialCode';
+import CheckItem from '@/shared/ui/CheckItem';
 
 interface IForm {
   name: string;
@@ -21,19 +22,21 @@ interface IForm {
 
 const SignUpScreen = () => {
   const navigation = useAuthStackNavigation();
-  const setAccessToken = useAuthStore(state => state.setAccessToken);
   const setSerialCode = useAuthStore(state => state.setSerialCode);
+  const setGuardianInfo = useAuthStore(state => state.setGuardianInfo);
   const {
     control,
     handleSubmit,
     formState: { isValid },
   } = useForm<IForm>({ mode: 'onChange' });
-  const signupMutation = useSignup();
   const validateCodeMutation = useValidateSerialCode();
+  const [checked, setChecked] = useState({
+    personalInfo: false,
+    service: false,
+  });
   const onValid = useCallback(
     async ({ name, phoneNumber, serialCode }: IForm) => {
       try {
-        // validateCodeMutation을 Promise로 래핑하여 결과를 기다립니다
         const isValidCode = await new Promise<boolean>((resolve, reject) => {
           validateCodeMutation.mutate(
             { serialCode },
@@ -49,30 +52,33 @@ const SignUpScreen = () => {
         });
 
         if (!isValidCode) {
-          showErrorToast({ text: '올바르지 않은 번호입니다.' });
+          showErrorToast({ text: '올바르지 않은 일련번호입니다.' });
           return;
         }
+        setGuardianInfo(name, phoneNumber);
+        setSerialCode(serialCode);
+        navigation.navigate('SeniorSignUpScreen');
 
-        signupMutation.mutate(
-          { name, phoneNumber, serialCode },
-          {
-            onSuccess: ({ accessToken }) => {
-              showSuccessToast({
-                text: '보호자 회원가입 성공',
-                onHide: () => {
-                  setAccessToken(accessToken);
-                  setSerialCode(serialCode);
-                  navigation.navigate('SeniorSignUpScreen');
-                },
-              });
-            },
-            onError: () => {
-              showErrorToast({ text: '회원가입에 실패했습니다.' });
-            },
-          },
-        );
+        // signupMutation.mutate(
+        //   { name, phoneNumber, serialCode },
+        //   {
+        //     onSuccess: ({ accessToken }) => {
+        //       showSuccessToast({
+        //         text: '보호자 회원가입 성공',
+        //         onHide: () => {
+        //           setAccessToken(accessToken);
+        //           setSerialCode(serialCode);
+        //           navigation.navigate('SeniorSignUpScreen');
+        //         },
+        //       });
+        //     },
+        //     onError: () => {
+        //       showErrorToast({ text: '회원가입에 실패했습니다.' });
+        //     },
+        //   },
+        // );
       } catch (error) {
-        showErrorToast({ text: '올바르지 않은 번호입니다.' });
+        showErrorToast({ text: '올바르지 않은 일련번호입니다.' });
       }
     },
     [],
@@ -86,8 +92,9 @@ const SignUpScreen = () => {
             <FormInput
               control={control}
               name="name"
-              label="성함"
-              placeholder="보호자 성함 입력"
+              label="보호자 이름"
+              labelColor={'#000'}
+              placeholder="이름 입력"
               rules={{
                 required: true,
                 pattern: {
@@ -100,7 +107,8 @@ const SignUpScreen = () => {
             <FormInput
               control={control}
               name="phoneNumber"
-              label="휴대폰 번호"
+              label="보호자 핸드폰번호"
+              labelColor={'#000'}
               placeholder="- 빼고 입력"
               rules={{
                 required: true,
@@ -114,7 +122,8 @@ const SignUpScreen = () => {
             <FormInput
               control={control}
               name="serialCode"
-              label="시리얼 번호"
+              label="기기 일련번호"
+              labelColor={'#000'}
               placeholder="6자리 숫자 입력"
               rules={{
                 required: true,
@@ -125,11 +134,31 @@ const SignUpScreen = () => {
               }}
               maxLength={6}
             />
+            <View style={styles.checkContainer}>
+              <CheckItem
+                title="개인정보 처리동의"
+                checked={checked.personalInfo}
+                pressHandler={() =>
+                  setChecked(prev => ({
+                    ...prev,
+                    personalInfo: !prev.personalInfo,
+                  }))
+                }
+              />
+              <CheckItem
+                title="서비스 이용동의"
+                checked={checked.service}
+                pressHandler={() =>
+                  setChecked(prev => ({ ...prev, service: !prev.service }))
+                }
+              />
+            </View>
           </View>
+
           <SubmitButton
-            title="저장하기"
+            title="다음"
             onPress={handleSubmit(onValid)}
-            disabled={!isValid}
+            disabled={!isValid || !checked.personalInfo || !checked.service}
           />
         </View>
       </KeyboardAvoidingLayout>
@@ -148,5 +177,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     marginTop: 40,
     gap: 16,
+  },
+  checkContainer: {
+    marginTop: 10,
+    gap: 2,
   },
 });

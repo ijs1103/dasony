@@ -1,3 +1,4 @@
+import AddressScreen from '@/screens/AddressScreen';
 import LoginScreen from '@/screens/LoginScreen';
 import SeniorSignUpScreen from '@/screens/SeniorSignUpScreen';
 import SignUpScreen from '@/screens/SignUpScreen';
@@ -15,6 +16,7 @@ type AuthStackParams = {
   SocailLoginScreen: undefined;
   SignUpScreen: undefined;
   SeniorSignUpScreen: undefined;
+  AddressScreen: undefined;
 };
 
 export const useAuthStackNavigation = <
@@ -33,10 +35,8 @@ export const AuthStackNavigator = () => {
       <AuthStack.Screen name="LoginScreen" component={LoginScreen} />
       <AuthStack.Screen name="SignUpScreen" component={SignUpScreen} />
       <AuthStack.Screen name="SeniorSignUpScreen" component={SeniorSignUpScreen} />
-      <AuthStack.Screen
-        name="SocailLoginScreen"
-        component={SocailLoginScreen}
-      />
+      <AuthStack.Screen name="AddressScreen" component={AddressScreen} />
+      <AuthStack.Screen name="SocailLoginScreen" component={SocailLoginScreen} />
     </AuthStack.Navigator>
   );
 };
