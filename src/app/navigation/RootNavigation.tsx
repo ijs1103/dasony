@@ -1,10 +1,12 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import HomeStackNavigator from './HomeStackNavigator';
 import SettingsStackNavigator from './SettingsStackNavigator';
-import { useTheme } from 'react-native-paper';
-
+import HomeIcon from '../../../assets/Tabbar/home_tab.svg';
+import ReportIcon from '../../../assets/Tabbar/report_tab.svg';
+import ProfileIcon from '../../../assets/Tabbar/profile_tab.svg';
+import ReportStackNavigator from './ReportStackNavigator';
+import { Text } from 'react-native';
 const Tab = createBottomTabNavigator();
 
 const hideTabBarScreens = [
@@ -17,21 +19,19 @@ const hideTabBarScreens = [
 ];
 
 const RootNavigation = () => {
-  const theme = useTheme();
   return (
     <Tab.Navigator
       initialRouteName="Home"
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: theme.colors.primary,
-        tabBarInactiveTintColor: theme.colors.secondary,
         tabBarStyle: (route => {
           const routeName = getFocusedRouteNameFromRoute(route) ?? '';
           const baseStyle = {
-            backgroundColor: theme.colors.background,
+            backgroundColor: '#f1f1f1',
             elevation: 0, // Android
             shadowOpacity: 0, // iOS
-            borderTopWidth: 0,
+            borderTopWidth: 0.3,
+            borderTopColor: '#000',
             position: 'absolute' as const,
             bottom: 0,
             left: 0,
@@ -47,9 +47,29 @@ const RootNavigation = () => {
         name="Home"
         component={HomeStackNavigator}
         options={{
-          tabBarLabel: '',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="magnify" size={size} color={color} />
+          tabBarLabel: ({ focused }) => (
+            <Text
+              style={{ color: focused ? '#458EF7' : '#888888', fontSize: 12 }}>
+              홈
+            </Text>
+          ),
+          tabBarIcon: ({ focused }) => (
+            <HomeIcon fill={focused ? '#458EF7' : 'transparent'} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Report"
+        component={ReportStackNavigator}
+        options={{
+          tabBarLabel: ({ focused }) => (
+            <Text
+              style={{ color: focused ? '#458EF7' : '#888888', fontSize: 12 }}>
+              대상자 활동 기록
+            </Text>
+          ),
+          tabBarIcon: ({ focused }) => (
+            <ReportIcon fill={focused ? '#458EF7' : 'transparent'} />
           ),
         }}
       />
@@ -57,9 +77,14 @@ const RootNavigation = () => {
         name="Settings"
         component={SettingsStackNavigator}
         options={{
-          tabBarLabel: '',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="web" size={size} color={color} />
+          tabBarLabel: ({ focused }) => (
+            <Text
+              style={{ color: focused ? '#458EF7' : '#888888', fontSize: 12 }}>
+              프로필
+            </Text>
+          ),
+          tabBarIcon: ({ focused }) => (
+            <ProfileIcon fill={focused ? '#458EF7' : 'transparent'} />
           ),
         }}
       />

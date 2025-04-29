@@ -13,6 +13,7 @@ interface FrigeUsageViewProps {
 
 const FrigeUsageView = ({ usageStatus, onPress }: FrigeUsageViewProps) => {
   const primaryColor = getUsageColor(usageStatus);
+  console.log('usageStatus', usageStatus);
   return (
     <View style={styles.container}>
       <View style={styles.vStack}>
@@ -28,7 +29,7 @@ const FrigeUsageView = ({ usageStatus, onPress }: FrigeUsageViewProps) => {
         </TouchableOpacity>
       </View>
       <View style={styles.alertContainer}>
-        {usageStatus === '활발한 활동 감지' || '양호한 활동 감지' ? (
+        {['활발한 활동 감지', '양호한 활동 감지'].includes(usageStatus) ? (
           <CheckIcon />
         ) : (
           <AlertIcon color={primaryColor} />
