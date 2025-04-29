@@ -60,6 +60,7 @@ const HomeScreen = () => {
     isLoading: isAllLoading,
     refetch: allRefetch,
   } = useAll();
+  console.log('dailyLogCounts', deviceData?.dailyLogCounts);
   const {
     data: dailyData,
     isLoading: isDailyLoading,
@@ -115,7 +116,7 @@ const HomeScreen = () => {
   }, []);
 
   const navigateToReport = useCallback(() => {
-    navigation.navigate('ReportScreen');
+    navigation.getParent()?.navigate('Report');
   }, []);
 
   const navigateToMemo = useCallback(() => {
@@ -255,26 +256,6 @@ const HomeScreen = () => {
           ) : (
             <Text style={styles.noMemoText}>작성한 메모가 없습니다.</Text>
           )}
-          {/* <MemoListItem
-            onPress={() => {}}
-            guardian={'호우호우'}
-            content={
-              '오늘 상태가 평소와 다름. 가까운 분이 한번 방문해야함. 오늘 상태가 평소와 다름. 가까운 분이 한번 방문해야함. 오늘 상태가 평소와 다름. 가까운 분이 한번 방문해야함.'
-            }
-            date={'14:23 04/23'}
-          />
-          <MemoListItem
-            onPress={() => {}}
-            guardian={'호우호우'}
-            content={'오늘 상태가 평소와 다름. 가까운 분이 한번 방문해야함'}
-            date={'14:23 04/23'}
-          />
-          <MemoListItem
-            onPress={() => {}}
-            guardian={'호우호우'}
-            content={'오늘 상태가 평소와 다름. 가까운 분이 한번 방문해야함'}
-            date={'14:23 04/23'}
-          /> */}
         </ScrollView>
       </View>
       <View style={styles.memoButtonContainer}>

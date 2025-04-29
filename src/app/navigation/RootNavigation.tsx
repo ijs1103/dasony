@@ -14,8 +14,8 @@ const hideTabBarScreens = [
   'ModalTestScreen',
   'AddressUpdateScreen',
   'NameUpdateScreen',
-  'ReportScreen',
   'MemoScreen',
+  'ReportDetailScreen',
 ];
 
 const RootNavigation = () => {

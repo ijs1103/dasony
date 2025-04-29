@@ -4,6 +4,7 @@ import {
   getPowerStatus,
   getRecentDetectionTime,
   getUsageStatus,
+  getDailyLogCounts,
 } from '@/shared/utils/util';
 import { BASE_URL } from '@/shared/utils/constants';
 import { All } from '../types/all';
@@ -34,14 +35,13 @@ export const useAll = () => {
       }
       return fetchAll(token);
     },
-    select: data => {
-      return {
-        rawData: data,
-        power: getPowerStatus(data),
-        usageStatus: getUsageStatus(data),
-        recentDetectionTime: getRecentDetectionTime(data),
-      };
-    },
+    select: data => ({
+      rawData: data,
+      power: getPowerStatus(data),
+      usageStatus: getUsageStatus(data),
+      recentDetectionTime: getRecentDetectionTime(data),
+      dailyLogCounts: getDailyLogCounts(data),
+    }),
     enabled: !!token,
     retry: false,
   });

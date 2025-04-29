@@ -4,6 +4,7 @@ import { DailyLog } from '@/features/device/types/daily';
 import { WeeklyLog } from '@/features/device/types/weekly';
 import { Sos } from '@/features/device/types/sos';
 import { UsageStatus } from '@/features/frige/types/UsageStatus';
+import { DailyLogCount } from '@/features/device/types/all';
 
 const mapProviderToKR = (provider: SocialLoginProvider) => {
   if (provider === 'google') {
@@ -15,11 +16,7 @@ const mapProviderToKR = (provider: SocialLoginProvider) => {
 // 냉장고 사용량 상태
 const getUsageStatus = (logs: All[]): UsageStatus => {
   const now = new Date();
-  const today = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate(),
-  );
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
   const yyyy = today.getFullYear();
   const mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -107,6 +104,32 @@ const getPowerStatus = (arr: All[]) => {
   };
 };
 
+const getDailyLogCounts = (data: All[]): DailyLogCount[] => {
+  if (!data || data.length === 0) {
+    return [];
+  }
+
+  const groupedByDate: { [key: string]: All[] } = {};
+
+  data.forEach(item => {
+    if (item.createdAt) {
+      const date = new Date(item.createdAt).toISOString().split('T')[0];
+      if (!groupedByDate[date]) {
+        groupedByDate[date] = [];
+      }
+      groupedByDate[date].push(item);
+    }
+  });
+
+  return Object.entries(groupedByDate)
+    .map(([date, items]) => ({
+      date,
+      count: items.filter(item => item.logType === 'MOTION').length,
+      data: items,
+    }))
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+};
+
 export {
   mapProviderToKR,
   getUsageStatus,
@@ -114,4 +137,5 @@ export {
   sumLogCounts,
   hasTodaySos,
   getPowerStatus,
+  getDailyLogCounts,
 };

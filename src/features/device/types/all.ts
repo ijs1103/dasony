@@ -17,3 +17,9 @@ export enum LogType {
   PowerOn = 'POWER_ON',
   Sos = 'SOS',
 }
+
+export interface DailyLogCount {
+  date: string;
+  count: number;
+  data: All[];
+}

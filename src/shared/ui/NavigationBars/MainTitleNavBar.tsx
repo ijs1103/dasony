@@ -6,8 +6,8 @@ import { View } from 'react-native';
 
 interface Props {
   title: string;
-  navigateToNotification: () => void;
-  navigateToSetting: () => void;
+  navigateToNotification?: () => void;
+  navigateToSetting?: () => void;
 }
 
 const MainTitleNavBar = ({
@@ -21,12 +21,16 @@ const MainTitleNavBar = ({
     <View style={styles.container}>
       <Text style={styles.titleText}>{title}</Text>
       <View style={styles.hStack}>
-        <TouchableOpacity onPress={navigateToNotification}>
-          {hasNotification ? <HasNoti /> : <HasNoNoti />}
-        </TouchableOpacity>
-        <TouchableOpacity onPress={navigateToSetting}>
-          <SettingButton />
-        </TouchableOpacity>
+        {navigateToNotification && (
+          <>
+            <TouchableOpacity onPress={navigateToNotification}>
+              {hasNotification ? <HasNoti /> : <HasNoNoti />}
+            </TouchableOpacity>
+            <TouchableOpacity onPress={navigateToSetting}>
+              <SettingButton />
+            </TouchableOpacity>
+          </>
+        )}
       </View>
     </View>
   );

@@ -13,7 +13,6 @@ interface FrigeUsageViewProps {
 
 const FrigeUsageView = ({ usageStatus, onPress }: FrigeUsageViewProps) => {
   const primaryColor = getUsageColor(usageStatus);
-  console.log('usageStatus', usageStatus);
   return (
     <View style={styles.container}>
       <View style={styles.vStack}>

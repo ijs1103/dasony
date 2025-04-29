@@ -1,3 +1,6 @@
+import ReportDetailScreen from '@/screens/ReportDetailScreen';
+import ReportScreen from '@/screens/ReportScreen';
+import { DailyLogCount } from '@/features/device/types/all';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import {
   createNativeStackNavigator,
@@ -7,11 +10,8 @@ import {
 const ReportStack = createNativeStackNavigator();
 
 type ReportStackParams = {
-  LoginScreen: undefined;
-  SocailLoginScreen: undefined;
-  SignUpScreen: undefined;
-  SeniorSignUpScreen: undefined;
-  AddressScreen: undefined;
+  ReportScreen: undefined;
+  ReportDetailScreen: { dailyLog: DailyLogCount };
 };
 
 export const useReportStackNavigation = <
@@ -29,17 +29,9 @@ export const ReportStackNavigator = () => {
         headerShown: false,
       }}>
       <ReportStack.Screen name="ReportScreen" component={ReportScreen} />
-      <ReportStack.Screen name="ReportDetailScreen" component={SignUpScreen} />
+      <ReportStack.Screen name="ReportDetailScreen" component={ReportDetailScreen} />
     </ReportStack.Navigator>
   );
 };
 
 export default ReportStackNavigator;
-
-const ReportScreen = () => {
-  return <></>;
-};
-
-const SignUpScreen = () => {
-  return <></>;
-};
