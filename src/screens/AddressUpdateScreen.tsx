@@ -1,4 +1,11 @@
-import { Modal, StyleSheet, TextInput, View } from 'react-native';
+import {
+  Modal,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Postcode from '@actbase/react-daum-postcode';
 import ScreenLayout from '@/shared/ui/ScreenLayout';
 import SubmitButton from '@/shared/ui/SubmitButton';
@@ -65,21 +72,34 @@ export default function AddressUpdateScreen() {
     data?.address === `${getValues('address')},${getValues('detailAddress')}` ||
     updateAddressMutation.isPending;
 
+  const openModal = useCallback(() => {
+    setModalVisible(true);
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setModalVisible(false);
+  }, []);
+
   return (
-    <ScreenLayout title={'주소 변경'}>
+    <ScreenLayout title="주소 변경">
       <View style={styles.subContainer}>
         <View style={styles.textInputContainer}>
           <FormInput
             control={control}
             label="주소"
             name="address"
-            onPress={() => setModalVisible(true)}
             editable={false}
             placeholder="우편번호 검색"
             rules={{
               required: true,
             }}
           />
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.addressButton}
+            onPress={openModal}>
+            <Text style={styles.addressButtonText}>우편번호 검색</Text>
+          </TouchableOpacity>
           <FormInput
             control={control}
             name="detailAddress"
@@ -96,16 +116,27 @@ export default function AddressUpdateScreen() {
           disabled={disabled}
         />
       </View>
-
-      <Modal animationType="slide" transparent={true} visible={modalVisible}>
-        <Postcode
-          style={{ flex: 1 }}
-          onSelected={data => {
-            setValue('address', data.address);
-            setModalVisible(false);
-          }}
-          onError={() => {}}
-        />
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={modalVisible}
+        onRequestClose={closeModal}>
+        <SafeAreaView style={{ flex: 1 }}>
+          <View style={styles.modalHeader}>
+            <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+              <Text style={styles.closeButtonText}>닫기</Text>
+            </TouchableOpacity>
+            <Text style={styles.modalTitle}>주소 검색</Text>
+          </View>
+          <Postcode
+            style={{ flex: 1 }}
+            onSelected={data => {
+              setValue('address', data.address);
+              setModalVisible(false);
+            }}
+            onError={() => {}}
+          />
+        </SafeAreaView>
       </Modal>
     </ScreenLayout>
   );
@@ -121,5 +152,38 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     backgroundColor: '#eee',
     gap: 16,
+  },
+  addressButton: {
+    backgroundColor: '#2752AB',
+    borderRadius: 8,
+    padding: 12,
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  addressButtonText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+    position: 'relative',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  closeButton: {
+    position: 'absolute',
+    left: 16,
+  },
+  closeButtonText: {
+    fontSize: 16,
+    color: '#2752AB',
   },
 });

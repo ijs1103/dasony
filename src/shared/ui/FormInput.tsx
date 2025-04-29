@@ -9,7 +9,6 @@ interface FormInputProps<T extends FieldValues> {
   rules?: object;
   maxLength?: number;
   labelColor?: string;
-  onPress?: () => void;
   editable?: boolean;
 }
 
@@ -21,11 +20,10 @@ const FormInput = <T extends FieldValues>({
   rules,
   maxLength,
   labelColor,
-  onPress,
   editable = true,
 }: FormInputProps<T>) => {
   return (
-    <Pressable style={styles.container} onPress={onPress}>
+    <>
       {label && (
         <Text
           style={[
@@ -61,7 +59,7 @@ const FormInput = <T extends FieldValues>({
         )}
         name={name}
       />
-    </Pressable>
+    </>
   );
 };
 

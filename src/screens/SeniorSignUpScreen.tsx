@@ -11,7 +11,7 @@ import showSuccessToast from '@/shared/ui/ToastMessages/SuccessToast';
 import { FORM_ERROR_MESSAGE, REGEX } from '@/shared/utils/constants';
 import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface IForm {
   name: string;
@@ -114,16 +114,24 @@ const SeniorSignUpScreen = () => {
               }}
               maxLength={6}
             />
+
             <FormInput
               control={control}
-              onPress={navigateToAddressScreen}
               name="address"
               label="보호 대상자 주소"
               placeholder="우편번호 검색"
+              editable={false}
               rules={{
                 required: true,
               }}
             />
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={styles.addressButton}
+              onPress={navigateToAddressScreen}>
+              <Text style={styles.addressButtonText}>우편번호 검색</Text>
+            </TouchableOpacity>
+
             <FormInput
               control={control}
               name="detailAddress"
@@ -155,5 +163,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     marginTop: 40,
     gap: 16,
+  },
+  addressButton: {
+    backgroundColor: '#2752AB',
+    borderRadius: 8,
+    padding: 12,
+    alignItems: 'center',
+  },
+  addressButtonText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 16,
   },
 });

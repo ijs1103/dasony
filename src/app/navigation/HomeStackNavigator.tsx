@@ -2,6 +2,7 @@ import AddressUpdateScreen from '@/screens/AddressUpdateScreen';
 import AlbumScreen from '@/screens/AlbumScreen';
 import ChartScreen from '@/screens/ChartScreen';
 import HomeScreen from '@/screens/HomeScreen';
+import MemoScreen from '@/screens/MemoScreen';
 import MessageCallScreen from '@/screens/MessageCallScreen';
 import ModalTestScreen from '@/screens/ModalTestScreen';
 import NameUpdateScreen from '@/screens/NameUpdateScreen';
@@ -25,6 +26,7 @@ type HomeStackParams = {
   ModalTestScreen: undefined;
   AlbumScreen: undefined;
   ReportScreen: undefined;
+  MemoScreen: undefined;
 };
 
 export const useHomeStackNavigation = <
@@ -58,6 +60,7 @@ export const HomeStackNavigator = () => {
       />
       <HomeStack.Screen name="ModalTestScreen" component={ModalTestScreen} />
       <HomeStack.Screen name="AlbumScreen" component={AlbumScreen} />
+      <HomeStack.Screen name="MemoScreen" component={MemoScreen} />
     </HomeStack.Navigator>
   );
 };

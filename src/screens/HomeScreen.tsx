@@ -4,8 +4,7 @@ import {
   View,
   RefreshControl,
   Platform,
-  Linking,
-  Alert,
+  ScrollView,
 } from 'react-native';
 import { Button } from 'react-native-paper';
 import { useHomeStackNavigation } from '@/app/navigation/HomeStackNavigator';
@@ -32,6 +31,8 @@ import YesorNoAlert from '@/shared/ui/YesorNoAlert';
 import useFrigeStatusStore from '@/features/frige/lib/stores/useFrigeStatusStore';
 import LoadingView from '@/shared/ui/LoadingView';
 import SubmitButton from '@/shared/ui/SubmitButton';
+import MemoListItem from '@/features/memo/ui/MemoListItem';
+import useMemoStore from '@/features/memo/model/useMemoStore';
 
 const HomeScreen = () => {
   const navigation = useHomeStackNavigation();
@@ -41,6 +42,8 @@ const HomeScreen = () => {
   const serialCode = useAuthStore(state => state.serialCode) ?? '';
   const isLifted = useFrigeStatusStore(state => state.isLifted);
   const setIsLifted = useFrigeStatusStore(state => state.setIsLifted);
+  const memos = useMemoStore(state => state.memos);
+  const deleteMemo = useMemoStore(state => state.deleteMemo);
 
   const navigateToNotification = async () => {
     logoutMutation.mutate(undefined, {
@@ -115,6 +118,14 @@ const HomeScreen = () => {
     navigation.navigate('ReportScreen');
   }, []);
 
+  const navigateToMemo = useCallback(() => {
+    navigation.navigate('MemoScreen');
+  }, []);
+
+  const memoDeleteHandler = useCallback((id: string) => {
+    deleteMemo(id);
+  }, []);
+
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
@@ -182,11 +193,6 @@ const HomeScreen = () => {
           </View>
           <FrigeStatusView status={frigeStatus} onPress={toggleAlertVisible} />
         </View>
-        <View style={styles.memoButtonContainer}>
-          <Button style={styles.memoButton} onPress={() => {}} mode="contained">
-            {'긴급 메모'}
-          </Button>
-        </View>
       </View>
       <View style={styles.reportContainer}>
         <Text style={styles.report}>{'최근 리포트'}</Text>
@@ -230,6 +236,55 @@ const HomeScreen = () => {
         />
       </View>
       <SubmitButton title="기록 전체 보기" onPress={navigateToReport} />
+      <View style={styles.memoContainer}>
+        <Text style={styles.report}>{'긴급 메모 공유'}</Text>
+        <ScrollView
+          style={styles.memoScrollView}
+          horizontal
+          showsHorizontalScrollIndicator={false}>
+          {memos.length > 0 ? (
+            memos.map(memo => (
+              <MemoListItem
+                key={memo.id}
+                guardian={memo.guardian}
+                content={memo.content}
+                date={memo.date}
+                onPress={() => memoDeleteHandler(memo.id)}
+              />
+            ))
+          ) : (
+            <Text style={styles.noMemoText}>작성한 메모가 없습니다.</Text>
+          )}
+          {/* <MemoListItem
+            onPress={() => {}}
+            guardian={'호우호우'}
+            content={
+              '오늘 상태가 평소와 다름. 가까운 분이 한번 방문해야함. 오늘 상태가 평소와 다름. 가까운 분이 한번 방문해야함. 오늘 상태가 평소와 다름. 가까운 분이 한번 방문해야함.'
+            }
+            date={'14:23 04/23'}
+          />
+          <MemoListItem
+            onPress={() => {}}
+            guardian={'호우호우'}
+            content={'오늘 상태가 평소와 다름. 가까운 분이 한번 방문해야함'}
+            date={'14:23 04/23'}
+          />
+          <MemoListItem
+            onPress={() => {}}
+            guardian={'호우호우'}
+            content={'오늘 상태가 평소와 다름. 가까운 분이 한번 방문해야함'}
+            date={'14:23 04/23'}
+          /> */}
+        </ScrollView>
+      </View>
+      <View style={styles.memoButtonContainer}>
+        <Button
+          style={styles.memoButton}
+          onPress={navigateToMemo}
+          mode="contained">
+          {'긴급 메모 작성'}
+        </Button>
+      </View>
       <YesorNoAlert
         visible={alertVisible}
         onDismiss={toggleAlertVisible}
@@ -300,6 +355,8 @@ const styles = StyleSheet.create({
         marginTop: 16,
       },
     }),
+    marginBottom: 30,
+    marginHorizontal: 16,
   },
   memoButton: {
     borderRadius: 6,
@@ -326,6 +383,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 18,
     marginLeft: 24,
+    color: '#111',
   },
   detectionTimeContainer: {
     marginTop: 26,
@@ -390,5 +448,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#f6f6f8',
     paddingHorizontal: 32,
     paddingVertical: 36,
+  },
+  memoContainer: {
+    marginTop: 28,
+    backgroundColor: '#fff',
+    paddingTop: 18,
+    paddingBottom: 30,
+  },
+  memoScrollView: {
+    flexDirection: 'row',
+    marginHorizontal: 16,
+    paddingHorizontal: 12,
+    marginTop: 16,
+    gap: 16,
+  },
+  noMemoText: {
+    fontSize: 18,
+    color: '#aaa',
   },
 });

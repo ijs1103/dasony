@@ -58,25 +58,6 @@ const SignUpScreen = () => {
         setGuardianInfo(name, phoneNumber);
         setSerialCode(serialCode);
         navigation.navigate('SeniorSignUpScreen');
-
-        // signupMutation.mutate(
-        //   { name, phoneNumber, serialCode },
-        //   {
-        //     onSuccess: ({ accessToken }) => {
-        //       showSuccessToast({
-        //         text: '보호자 회원가입 성공',
-        //         onHide: () => {
-        //           setAccessToken(accessToken);
-        //           setSerialCode(serialCode);
-        //           navigation.navigate('SeniorSignUpScreen');
-        //         },
-        //       });
-        //     },
-        //     onError: () => {
-        //       showErrorToast({ text: '회원가입에 실패했습니다.' });
-        //     },
-        //   },
-        // );
       } catch (error) {
         showErrorToast({ text: '올바르지 않은 일련번호입니다.' });
       }
@@ -180,6 +161,6 @@ const styles = StyleSheet.create({
   },
   checkContainer: {
     marginTop: 10,
-    gap: 2,
+    gap: 12,
   },
 });

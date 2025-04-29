@@ -13,6 +13,7 @@ const hideTabBarScreens = [
   'AddressUpdateScreen',
   'NameUpdateScreen',
   'ReportScreen',
+  'MemoScreen',
 ];
 
 const RootNavigation = () => {

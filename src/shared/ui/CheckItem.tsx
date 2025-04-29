@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { Checkbox } from 'react-native-paper';
-
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
 interface Props {
   title: string;
   checked: boolean;
@@ -10,9 +9,13 @@ interface Props {
 const CheckItem = ({ title, checked, pressHandler }: Props) => {
   return (
     <View style={styles.container}>
-      <Checkbox
-        color="#3182F6"
-        status={checked ? 'checked' : 'unchecked'}
+      <BouncyCheckbox
+        isChecked={checked}
+        size={26}
+        fillColor="#3182F6"
+        unFillColor="#fff"
+        disableText
+        innerIconStyle={{ borderWidth: 2 }}
         onPress={pressHandler}
       />
       <Text>{title}</Text>
@@ -26,6 +29,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: 8,
   },
 });
