@@ -1,3 +1,4 @@
+import EditProfileScreen from '@/screens/EditProfileScreen';
 import SettingsScreen from '@/screens/SettingsScreen';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import {
@@ -10,6 +11,7 @@ const SettingsStack = createNativeStackNavigator();
 type SettingsStackParams = {
   SettingsScreen: undefined;
   PermissionScreen: undefined;
+  EditProfileScreen: undefined;
 };
 
 export const useSettingsStackNavigation = <
@@ -31,6 +33,10 @@ export const SettingsStackNavigator = () => {
       <SettingsStack.Screen
         name="PermissionScreen"
         component={SettingsScreen}
+      />
+      <SettingsStack.Screen
+        name="EditProfileScreen"
+        component={EditProfileScreen}
       />
     </SettingsStack.Navigator>
   );

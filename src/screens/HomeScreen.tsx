@@ -47,11 +47,8 @@ const HomeScreen = () => {
 
   const navigateToNotification = async () => {
     logoutMutation.mutate(undefined, {
-      onSuccess: () => {
+      onSettled: () => {
         handleLogout();
-      },
-      onError: () => {
-        return showErrorToast({ text: '로그아웃 실패' });
       },
     });
   };
@@ -60,7 +57,6 @@ const HomeScreen = () => {
     isLoading: isAllLoading,
     refetch: allRefetch,
   } = useAll();
-  console.log('dailyLogCounts', deviceData?.dailyLogCounts);
   const {
     data: dailyData,
     isLoading: isDailyLoading,

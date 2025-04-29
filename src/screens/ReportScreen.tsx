@@ -61,7 +61,10 @@ const ReportScreen = () => {
           ItemSeparatorComponent={ItemSeparatorComponent}
         />
       ) : (
-        <ListEmptyComponent title={'아직 데이터가 없어요.'} />
+        <>
+          <MainTitleNavBar title={'최근 냉장고 활동 리포트'} />
+          <ListEmptyComponent title={'아직 데이터가 없어요.'} />
+        </>
       )}
     </ScreenLayout>
   );
