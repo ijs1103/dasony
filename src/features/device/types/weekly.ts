@@ -1,4 +1,4 @@
-type LogEntry = {
+export interface WeeklyRawData {
   month: string;
   count: number;
 };
@@ -9,5 +9,5 @@ export type WeeklyLog = {
   longitude: number | null;
   latitude: number | null;
   battery: number | null;
-  log: LogEntry[];
+  log: WeeklyRawData[];
 };

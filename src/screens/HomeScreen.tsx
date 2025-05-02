@@ -22,7 +22,6 @@ import { useDaily } from '@/features/device/model/useDaily';
 import { useWeekly } from '@/features/device/model/useWeekly';
 import useAuthStore from '@/shared/lib/stores/useAuthStore';
 import useLogout from '@/features/auth/model/useLogout';
-import showErrorToast from '@/shared/ui/ToastMessages/ErrorToast';
 import { FrigeStatus } from '@/features/frige/types/FrigeStatus';
 import { useSos } from '@/features/device/model/useSos';
 import { mapToFrigeStatus } from '@/features/device/lib/mapToFrigeStatus';
@@ -45,13 +44,7 @@ const HomeScreen = () => {
   const memos = useMemoStore(state => state.memos);
   const deleteMemo = useMemoStore(state => state.deleteMemo);
 
-  const navigateToNotification = async () => {
-    logoutMutation.mutate(undefined, {
-      onSettled: () => {
-        handleLogout();
-      },
-    });
-  };
+  const navigateToNotification = async () => {};
   const {
     data: deviceData,
     isLoading: isAllLoading,
@@ -119,6 +112,10 @@ const HomeScreen = () => {
     navigation.navigate('MemoScreen');
   }, []);
 
+  const navigateToProfile = useCallback(() => {
+    navigation.getParent()?.navigate('Settings');
+  }, []);
+
   const memoDeleteHandler = useCallback((id: string) => {
     deleteMemo(id);
   }, []);
@@ -159,7 +156,7 @@ const HomeScreen = () => {
       <MainTitleNavBar
         title={`어르신 안전 지킴이 "다소니" (${serialCode})`}
         navigateToNotification={navigateToNotification}
-        navigateToSetting={() => {}}
+        navigateToSetting={navigateToProfile}
       />
       <View style={styles.seniorContainer}>
         <View style={styles.hStack}>
@@ -229,7 +226,7 @@ const HomeScreen = () => {
         </View>
         <FrigeUsageView
           usageStatus={deviceData?.usageStatus ?? '최근 활동 없음'}
-          onPress={() => {}}
+          onPress={() => navigation.navigate('ChartScreen')}
         />
       </View>
       <SubmitButton title="기록 전체 보기" onPress={navigateToReport} />

@@ -2,11 +2,11 @@ import { useQuery } from '@tanstack/react-query';
 import useAuthStore from '@/shared/lib/stores/useAuthStore';
 import { sumLogCounts } from '@/shared/utils/util';
 import { BASE_URL } from '@/shared/utils/constants';
-import { WeeklyLog } from '../types/weekly';
-import { mapToWeeklyChartData } from '../lib/mapToChartData';
+import { mapToMonthlyChartData } from '../lib/mapToChartData';
+import { MonthlyLog } from '../types/monthly';
 
-const fetchWeekly = async (token: string): Promise<WeeklyLog[]> => {
-  const response = await fetch(`${BASE_URL}/terminal/motion/weekly`, {
+const fetchMonthly = async (token: string): Promise<MonthlyLog[]> => {
+  const response = await fetch(`${BASE_URL}/terminal/motion/monthly`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -15,28 +15,26 @@ const fetchWeekly = async (token: string): Promise<WeeklyLog[]> => {
   });
 
   if (!response.ok) {
-    throw new Error('Failed to fetch weekly log');
+    throw new Error('Failed to fetch monthly log');
   }
 
   return response.json();
 };
 
-export const useWeekly = () => {
+export const useMonthly = () => {
   const token = useAuthStore(state => state.accessToken);
   return useQuery({
-    queryKey: ['weekly', token],
+    queryKey: ['monthly', token],
     queryFn: () => {
       if (!token) {
         throw new Error('인증 토큰이 필요합니다.');
       }
-      return fetchWeekly(token);
+      return fetchMonthly(token);
     },
     select: data => {
-      const weeklyTotalCount = sumLogCounts(data);
       return {
-        weeklyTotalCount,
-        weeklyAverage: Math.round(weeklyTotalCount / 7),
-        chartData: mapToWeeklyChartData(data[0].log),
+        monthlyTotalCount: data[0].log[data[0].log.length - 1].count,
+        chartData: mapToMonthlyChartData(data[0].log),
       };
     },
     enabled: !!token,

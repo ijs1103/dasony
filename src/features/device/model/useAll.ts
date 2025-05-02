@@ -28,7 +28,7 @@ export const fetchAll = async (token: string): Promise<All[]> => {
 export const useAll = () => {
   const token = useAuthStore(state => state.accessToken);
   return useQuery({
-    queryKey: ['all'],
+    queryKey: ['all', token],
     queryFn: () => {
       if (!token) {
         throw new Error('인증 토큰이 필요합니다.');

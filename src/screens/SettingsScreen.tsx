@@ -5,7 +5,6 @@ import useSignout from '@/features/auth/model/useSignout';
 import { useUser } from '@/features/auth/model/useUser';
 import useAuthStore from '@/shared/lib/stores/useAuthStore';
 import Divider from '@/shared/ui/Divider';
-import MainTitleNavBar from '@/shared/ui/NavigationBars/MainTitleNavBar';
 import ScreenLayout from '@/shared/ui/ScreenLayout';
 import showErrorToast from '@/shared/ui/ToastMessages/ErrorToast';
 import showSuccessToast from '@/shared/ui/ToastMessages/SuccessToast';
@@ -62,7 +61,6 @@ const SettingsScreen = () => {
   }, []);
   return (
     <ScreenLayout>
-      <MainTitleNavBar title={'프로필'} />
       <List.Item
         title={'보호자'}
         titleStyle={{
@@ -73,6 +71,7 @@ const SettingsScreen = () => {
         description={data?.name}
         descriptionStyle={{
           fontSize: 16,
+          marginBottom: 32,
         }}
       />
       <View style={styles.container}>

@@ -49,9 +49,10 @@ const styles = StyleSheet.create({
   logType: {
     color: '#111',
     fontSize: 18,
+    fontWeight: '700',
   },
   dateTime: {
-    fontWeight: '700',
+    fontWeight: '400',
     color: '#111',
   },
 });

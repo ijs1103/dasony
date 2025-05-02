@@ -24,7 +24,7 @@ export const useSos = () => {
   const token = useAuthStore(state => state.accessToken);
 
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ['sos'],
+    queryKey: ['sos', token],
     queryFn: () => {
       if (!token) {
         throw new Error('인증 토큰이 필요합니다.');

@@ -17,6 +17,7 @@ const hideTabBarScreens = [
   'MemoScreen',
   'ReportDetailScreen',
   'EditProfileScreen',
+  'ChartScreen',
 ];
 
 const RootNavigation = () => {

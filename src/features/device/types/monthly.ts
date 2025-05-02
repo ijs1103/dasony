@@ -1,13 +1,13 @@
-export interface DailyRawData {
-  hour: number;
+export interface MonthlyRawData {
+  month: string;
   count: number;
 }
 
-export interface DailyLog {
+export type MonthlyLog = {
   id: number;
   serialCode: string;
   longitude: number | null;
   latitude: number | null;
   battery: number | null;
-  log: DailyRawData[];
-}
+  log: MonthlyRawData[];
+};

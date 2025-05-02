@@ -23,7 +23,7 @@ export const usePowers = () => {
   const token = useAuthStore(state => state.accessToken);
 
   return useQuery({
-    queryKey: ['powers'],
+    queryKey: ['powers', token],
     queryFn: () => {
       if (!token) {
         throw new Error('인증 토큰이 필요합니다.');

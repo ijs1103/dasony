@@ -23,9 +23,9 @@ const MainTitleNavBar = ({
       <View style={styles.hStack}>
         {navigateToNotification && (
           <>
-            <TouchableOpacity onPress={navigateToNotification}>
+            {/* <TouchableOpacity onPress={navigateToNotification}>
               {hasNotification ? <HasNoti /> : <HasNoNoti />}
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity onPress={navigateToSetting}>
               <SettingButton />
             </TouchableOpacity>
