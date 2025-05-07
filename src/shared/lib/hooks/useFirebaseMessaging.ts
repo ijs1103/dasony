@@ -64,7 +64,7 @@ export const useFirebaseMessaging = () => {
 
     // 포그라운드
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('fcm 새 메시지', JSON.stringify(remoteMessage));
+      Alert.alert('알림', JSON.stringify(remoteMessage.notification?.body));
     });
 
     requestUserPermission();

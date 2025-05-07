@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, TextInput } from 'react-native';
+import { StyleSheet, Text, TextInput } from 'react-native';
 import { Control, Controller, FieldValues, Path } from 'react-hook-form';
 
 interface FormInputProps<T extends FieldValues> {

@@ -18,6 +18,7 @@ const hideTabBarScreens = [
   'ReportDetailScreen',
   'EditProfileScreen',
   'ChartScreen',
+  'WebViewScreen',
 ];
 
 const RootNavigation = () => {

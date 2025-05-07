@@ -1,5 +1,4 @@
 import { useSettingsStackNavigation } from '@/app/navigation/SettingsStackNavigator';
-import { formatPhoneNumber } from '@/features/auth/lib/formatPhoneNumber';
 import useLogout from '@/features/auth/model/useLogout';
 import useSignout from '@/features/auth/model/useSignout';
 import { useUser } from '@/features/auth/model/useUser';
@@ -23,11 +22,15 @@ const SettingsScreen = () => {
   };
 
   const navigateToPrivacyPolicy = () => {
-    // navigation.navigate('PrivacyPolicyScreen');
+    navigation.navigate('WebViewScreen', {
+      uri: 'https://www.google.com',
+    });
   };
 
   const navigateToServicePolicy = () => {
-    // navigation.navigate('ServicePolicyScreen');
+    navigation.navigate('WebViewScreen', {
+      uri: 'https://www.naver.com',
+    });
   };
 
   const logout = useCallback(() => {
@@ -67,11 +70,12 @@ const SettingsScreen = () => {
           color: '#000',
           fontWeight: '700',
           fontSize: 20,
+          marginBottom: 8,
         }}
         description={data?.name}
         descriptionStyle={{
           fontSize: 16,
-          marginBottom: 32,
+          marginBottom: 24,
         }}
       />
       <View style={styles.container}>

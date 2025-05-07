@@ -1,15 +1,11 @@
 import {
-  Alert,
-  Linking,
-  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import { useCallback, useEffect, useState } from 'react';
-import { Button, TextInput } from 'react-native-paper';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import KeyboardAvoidingLayout from '@/shared/ui/KeyboardAvoidingLayout';
 import { useAuthStackNavigation } from '@/app/navigation/AuthStackNavigator';
 import useAuthStore from '@/shared/lib/stores/useAuthStore';
@@ -18,7 +14,6 @@ import { useLogin } from '@/features/auth/model/useLogin';
 import showErrorToast from '@/shared/ui/ToastMessages/ErrorToast';
 import { useFirebaseMessaging } from '@/shared/lib/hooks/useFirebaseMessaging';
 import { LoginRequest, LoginResponse } from '@/features/auth/types/login';
-import Spacer from '@/shared/ui/Spacer';
 import { FORM_ERROR_MESSAGE, REGEX } from '@/shared/utils/constants';
 import usePermissions from '@/shared/lib/hooks/usePermissions';
 import ScreenLayout from '@/shared/ui/ScreenLayout';

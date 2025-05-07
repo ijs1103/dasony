@@ -4,13 +4,11 @@ import { useForm } from 'react-hook-form';
 import { FORM_ERROR_MESSAGE, REGEX } from '@/shared/utils/constants';
 import SubmitButton from '@/shared/ui/SubmitButton';
 import FormInput from '@/shared/ui/FormInput';
-import { useSignup } from '@/features/auth/model/useSignup';
 import { useCallback, useState } from 'react';
 import showErrorToast from '@/shared/ui/ToastMessages/ErrorToast';
 import { useAuthStackNavigation } from '@/app/navigation/AuthStackNavigator';
 import KeyboardAvoidingLayout from '@/shared/ui/KeyboardAvoidingLayout';
 import useAuthStore from '@/shared/lib/stores/useAuthStore';
-import showSuccessToast from '@/shared/ui/ToastMessages/SuccessToast';
 import { useValidateSerialCode } from '@/features/device/model/useValidateSerialCode';
 import CheckItem from '@/shared/ui/CheckItem';
 

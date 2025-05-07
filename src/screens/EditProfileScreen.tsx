@@ -4,7 +4,7 @@ import Spacer from '@/shared/ui/Spacer';
 import SubmitButton from '@/shared/ui/SubmitButton';
 import { Controller, useForm } from 'react-hook-form';
 import { FORM_ERROR_MESSAGE, REGEX } from '@/shared/utils/constants';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { useHomeStackNavigation } from '@/app/navigation/HomeStackNavigator';
 import showSuccessToast from '@/shared/ui/ToastMessages/SuccessToast';
 import showErrorToast from '@/shared/ui/ToastMessages/ErrorToast';

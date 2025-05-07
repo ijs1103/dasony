@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import useAuthStore from '@/shared/lib/stores/useAuthStore';
-import { sumLogCounts } from '@/shared/utils/util';
 import { BASE_URL } from '@/shared/utils/constants';
 import { mapToMonthlyChartData } from '../lib/mapToChartData';
 import { MonthlyLog } from '../types/monthly';

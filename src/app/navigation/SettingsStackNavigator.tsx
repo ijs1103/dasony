@@ -1,5 +1,6 @@
 import EditProfileScreen from '@/screens/EditProfileScreen';
 import SettingsScreen from '@/screens/SettingsScreen';
+import { WebViewScreen } from '@/screens/WebViewScreen';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import {
   createNativeStackNavigator,
@@ -12,6 +13,7 @@ type SettingsStackParams = {
   SettingsScreen: undefined;
   PermissionScreen: undefined;
   EditProfileScreen: undefined;
+  WebViewScreen: { uri: string | undefined };
 };
 
 export const useSettingsStackNavigation = <
@@ -37,6 +39,10 @@ export const SettingsStackNavigator = () => {
       <SettingsStack.Screen
         name="EditProfileScreen"
         component={EditProfileScreen}
+      />
+      <SettingsStack.Screen
+        name="WebViewScreen"
+        component={WebViewScreen}
       />
     </SettingsStack.Navigator>
   );

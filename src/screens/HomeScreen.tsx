@@ -21,7 +21,6 @@ import { useState, useCallback, useEffect } from 'react';
 import { useDaily } from '@/features/device/model/useDaily';
 import { useWeekly } from '@/features/device/model/useWeekly';
 import useAuthStore from '@/shared/lib/stores/useAuthStore';
-import useLogout from '@/features/auth/model/useLogout';
 import { FrigeStatus } from '@/features/frige/types/FrigeStatus';
 import { useSos } from '@/features/device/model/useSos';
 import { mapToFrigeStatus } from '@/features/device/lib/mapToFrigeStatus';
@@ -36,8 +35,6 @@ import useMemoStore from '@/features/memo/model/useMemoStore';
 const HomeScreen = () => {
   const navigation = useHomeStackNavigation();
   const [refreshing, setRefreshing] = useState(false);
-  const logoutMutation = useLogout();
-  const handleLogout = useAuthStore(state => state.handleLogout);
   const serialCode = useAuthStore(state => state.serialCode) ?? '';
   const isLifted = useFrigeStatusStore(state => state.isLifted);
   const setIsLifted = useFrigeStatusStore(state => state.setIsLifted);
