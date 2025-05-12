@@ -1,8 +1,9 @@
-import { Image, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Button, Chip } from 'react-native-paper';
 import SosButton from '../../../../assets/Home/sos_button.svg';
 import ClosedFrige from '../../../../assets/Home/closed_frige.svg';
 import OpenedFrige from '../../../../assets/Home/opened_frige.svg';
+import NoUsedDevice from '../../../../assets/Home/no_used_device.svg';
 import { FrigeStatus } from '../types/FrigeStatus';
 
 interface Props {
@@ -65,10 +66,7 @@ const FrigeStatusView = ({ status, onPress }: Props) => {
             mode="flat">
             {'장시간 미사용'}
           </Chip>
-          <Image
-            source={require('../../../../assets/Home/unused_device.png')}
-            style={{ width: 110, height: 135 }}
-          />
+          <NoUsedDevice />
         </>
       )}
     </View>

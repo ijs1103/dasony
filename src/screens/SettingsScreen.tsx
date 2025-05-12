@@ -7,6 +7,7 @@ import Divider from '@/shared/ui/Divider';
 import ScreenLayout from '@/shared/ui/ScreenLayout';
 import showErrorToast from '@/shared/ui/ToastMessages/ErrorToast';
 import showSuccessToast from '@/shared/ui/ToastMessages/SuccessToast';
+import { WEB_VIEW_URL } from '@/shared/utils/constants';
 import { useCallback } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 import { List } from 'react-native-paper';
@@ -23,13 +24,13 @@ const SettingsScreen = () => {
 
   const navigateToPrivacyPolicy = () => {
     navigation.navigate('WebViewScreen', {
-      uri: 'https://www.google.com',
+      uri: WEB_VIEW_URL.PRIVACY_POLICY,
     });
   };
 
   const navigateToServicePolicy = () => {
     navigation.navigate('WebViewScreen', {
-      uri: 'https://www.naver.com',
+      uri: WEB_VIEW_URL.SERVICE_POLICY,
     });
   };
 
