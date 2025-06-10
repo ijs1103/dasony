@@ -16,8 +16,11 @@ export const validateSerialCode = async (
     },
     body: JSON.stringify(data),
   });
-
-  return response.ok;
+  if (!response.ok) {
+    const errorData = await response.json();
+    return errorData.message === '이미 등록된 일련 번호입니다.';
+  }
+  return true;
 };
 
 export const useValidateSerialCode = () => {

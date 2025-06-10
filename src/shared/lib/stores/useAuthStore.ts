@@ -9,6 +9,7 @@ interface AuthState {
   accessToken: string | null;
   refreshToken: string | null;
   fcmToken: string | null;
+  phoneNumber: string | null;
   guardianName: string | null;
   guardianPhoneNumber: string | null;
   seniorAddress: string | null;
@@ -19,6 +20,7 @@ interface AuthState {
   setAccessToken: (token: string) => void;
   setRefreshToken: (token: string) => void;
   setFcmToken: (token: string) => void;
+  setPhoneNumber: (phoneNumber: string) => void;
   setSerialCode: (code: string) => void;
   setRecentLogin: (provider: SocialLoginProvider) => void;
   setGuardianInfo: (name: string | null, phoneNumber: string | null) => void;
@@ -32,6 +34,7 @@ const useAuthStore = create<AuthState>()(
       accessToken: null,
       refreshToken: null,
       fcmToken: null,
+      phoneNumber: null,
       guardianName: null,
       guardianPhoneNumber: null,
       seniorAddress: null,
@@ -45,11 +48,13 @@ const useAuthStore = create<AuthState>()(
           refreshToken: null,
           fcmToken: null,
           serialCode: null,
+          phoneNumber: null,
         });
       },
       setAccessToken: (token: string) => set({ accessToken: token }),
       setRefreshToken: (token: string) => set({ refreshToken: token }),
       setFcmToken: (token: string) => set({ fcmToken: token }),
+      setPhoneNumber: (phoneNumber: string) => set({ phoneNumber }),
       setSerialCode: (code: string) => set({ serialCode: code }),
       setGuardianInfo: (name: string | null, phoneNumber: string | null) =>
         set({ guardianName: name, guardianPhoneNumber: phoneNumber }),

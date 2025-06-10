@@ -2,6 +2,8 @@
   "extends": "@react-native/typescript-config/tsconfig.json",
   "compilerOptions": {
     "jsx": "react-jsx",
+    "module": "es2020",
+    "target": "es2020",
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]

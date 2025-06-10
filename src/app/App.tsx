@@ -23,6 +23,7 @@ import SplashScreen from 'react-native-splash-screen';
 import Toast from 'react-native-toast-message';
 import { QueryProvider } from '@/shared/utils/queryprovider';
 import { TokenManager } from '@/features/auth/model/TokenManager';
+import { useFirebaseMessaging } from '@/shared/lib/hooks/useFirebaseMessaging';
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: NavigationDefaultTheme,
@@ -45,6 +46,7 @@ const App = () => {
   const isDarkTheme = useThemeStore(state => state.isDarkTheme);
   const paperTheme = isDarkTheme ? CombinedDarkTheme : CombinedLightTheme;
   const isLoggedIn = useAuthStore(state => state.isLoggedIn);
+  useFirebaseMessaging();
 
   const initializeApp = () => {
     GoogleSignin.configure({

@@ -102,52 +102,49 @@ const usePermissions = () => {
     );
   }, []);
 
-  const requestSinglePermission = useCallback(
-    async (type: PermissionType) => {
-      let permissionStatus: PermissionStatus | undefined;
+  const requestSinglePermission = useCallback(async (type: PermissionType) => {
+    let permissionStatus: PermissionStatus | undefined;
 
-      try {
-        if (Platform.OS === 'ios') {
-          const { status } = await requestNotifications([
-            'alert',
-            'sound',
-            'badge',
-          ]);
-          permissionStatus = status;
-        } else if (Platform.OS === 'android') {
-          try {
-            if (Platform.Version >= 33) {
-              permissionStatus = (await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-              )) as PermissionStatus;
-            } else {
-              permissionStatus = 'granted' as PermissionStatus;
-            }
-          } catch (err) {
-            console.log('Android 권한요청 에러:', err);
+    try {
+      if (Platform.OS === 'ios') {
+        const { status } = await requestNotifications([
+          'alert',
+          'sound',
+          'badge',
+        ]);
+        permissionStatus = status;
+      } else if (Platform.OS === 'android') {
+        try {
+          if (Platform.Version >= 33) {
+            permissionStatus = (await PermissionsAndroid.request(
+              PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+            )) as PermissionStatus;
+          } else {
+            permissionStatus = 'granted' as PermissionStatus;
           }
+        } catch (err) {
+          console.log('Android 권한요청 에러:', err);
         }
-      } catch (err) {
-        console.log('권한요청 에러:', err);
       }
+    } catch (err) {
+      console.log('권한요청 에러:', err);
+    }
 
-      setPermissions(prev => ({
-        ...prev,
-        [type]: permissionStatus,
-      }));
+    setPermissions(prev => ({
+      ...prev,
+      [type]: permissionStatus,
+    }));
 
-      // 권한이 거절된 경우 설정 화면으로 이동
-      if (permissionStatus !== 'granted') {
-        openSettings();
-      }
+    // 권한이 거절된 경우 설정 화면으로 이동
+    // if (permissionStatus !== 'granted') {
+    //   openSettings();
+    // }
 
-      // 권한 요청 후 전체 권한 상태 업데이트
-      await updateAllGranted();
+    // 권한 요청 후 전체 권한 상태 업데이트
+    await updateAllGranted();
 
-      return permissionStatus;
-    },
-    [],
-  );
+    return permissionStatus;
+  }, []);
 
   const requestPermissions = useCallback(async () => {
     console.log('권한 요청 시작');

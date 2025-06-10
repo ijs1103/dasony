@@ -48,7 +48,6 @@ const SignUpScreen = () => {
             },
           );
         });
-
         if (!isValidCode) {
           showErrorToast({ text: '올바르지 않은 일련번호입니다.' });
           return;

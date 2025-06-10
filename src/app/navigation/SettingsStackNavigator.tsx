@@ -1,6 +1,4 @@
-import EditProfileScreen from '@/screens/EditProfileScreen';
-import SettingsScreen from '@/screens/SettingsScreen';
-import { WebViewScreen } from '@/screens/WebViewScreen';
+import { Suspense, lazy } from 'react';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import {
   createNativeStackNavigator,
@@ -25,26 +23,32 @@ export const useSettingsStackRoute = <
   RouteName extends keyof SettingsStackParams,
 >() => useRoute<RouteProp<SettingsStackParams, RouteName>>();
 
+const EditProfileScreen = lazy(() => import('@/screens/EditProfileScreen'));
+const SettingsScreen = lazy(() => import('@/screens/SettingsScreen'));
+const WebViewScreen = lazy(() => import('@/screens/WebViewScreen'));
+
 export const SettingsStackNavigator = () => {
   return (
-    <SettingsStack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}>
-      <SettingsStack.Screen name="SettingsScreen" component={SettingsScreen} />
-      <SettingsStack.Screen
-        name="PermissionScreen"
-        component={SettingsScreen}
-      />
-      <SettingsStack.Screen
-        name="EditProfileScreen"
-        component={EditProfileScreen}
-      />
-      <SettingsStack.Screen
-        name="WebViewScreen"
-        component={WebViewScreen}
-      />
-    </SettingsStack.Navigator>
+    <Suspense fallback={null}>
+      <SettingsStack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}>
+        <SettingsStack.Screen
+          name="SettingsScreen"
+          component={SettingsScreen}
+        />
+        <SettingsStack.Screen
+          name="PermissionScreen"
+          component={SettingsScreen}
+        />
+        <SettingsStack.Screen
+          name="EditProfileScreen"
+          component={EditProfileScreen}
+        />
+        <SettingsStack.Screen name="WebViewScreen" component={WebViewScreen} />
+      </SettingsStack.Navigator>
+    </Suspense>
   );
 };
 

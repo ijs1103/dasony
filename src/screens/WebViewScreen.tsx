@@ -3,7 +3,7 @@ import ScreenLayout from '@/shared/ui/ScreenLayout';
 import { useSettingsStackRoute } from '@/app/navigation/SettingsStackNavigator';
 import { WEB_VIEW_URL } from '@/shared/utils/constants';
 
-export const WebViewScreen: React.FC = () => {
+const WebViewScreen: React.FC = () => {
   const route = useSettingsStackRoute();
   return (
     <ScreenLayout title="약관">
@@ -13,3 +13,4 @@ export const WebViewScreen: React.FC = () => {
     </ScreenLayout>
   );
 };
+export default WebViewScreen;

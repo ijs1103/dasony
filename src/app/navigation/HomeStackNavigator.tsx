@@ -1,9 +1,4 @@
-import AddressUpdateScreen from '@/screens/AddressUpdateScreen';
-import ChartScreen from '@/screens/ChartScreen';
-import HomeScreen from '@/screens/HomeScreen';
-import MemoScreen from '@/screens/MemoScreen';
-import NameUpdateScreen from '@/screens/NameUpdateScreen';
-import ReportScreen from '@/screens/ReportScreen';
+import { Suspense, lazy } from 'react';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import {
   createNativeStackNavigator,
@@ -31,22 +26,34 @@ export const useHomeStackNavigation = <
 export const useHomeStackRoute = <RouteName extends keyof HomeStackParams>() =>
   useRoute<RouteProp<HomeStackParams, RouteName>>();
 
+const AddressUpdateScreen = lazy(() => import('@/screens/AddressUpdateScreen'));
+const ChartScreen = lazy(() => import('@/screens/ChartScreen'));
+const HomeScreen = lazy(() => import('@/screens/HomeScreen'));
+const MemoScreen = lazy(() => import('@/screens/MemoScreen'));
+const NameUpdateScreen = lazy(() => import('@/screens/NameUpdateScreen'));
+const ReportScreen = lazy(() => import('@/screens/ReportScreen'));
+
 export const HomeStackNavigator = () => {
   return (
-    <HomeStack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}>
-      <HomeStack.Screen name="HomeScreen" component={HomeScreen} />
-      <HomeStack.Screen
-        name="AddressUpdateScreen"
-        component={AddressUpdateScreen}
-      />
-      <HomeStack.Screen name="NameUpdateScreen" component={NameUpdateScreen} />
-      <HomeStack.Screen name="ReportScreen" component={ReportScreen} />
-      <HomeStack.Screen name="ChartScreen" component={ChartScreen} />
-      <HomeStack.Screen name="MemoScreen" component={MemoScreen} />
-    </HomeStack.Navigator>
+    <Suspense fallback={null}>
+      <HomeStack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}>
+        <HomeStack.Screen name="HomeScreen" component={HomeScreen} />
+        <HomeStack.Screen
+          name="AddressUpdateScreen"
+          component={AddressUpdateScreen}
+        />
+        <HomeStack.Screen
+          name="NameUpdateScreen"
+          component={NameUpdateScreen}
+        />
+        <HomeStack.Screen name="ReportScreen" component={ReportScreen} />
+        <HomeStack.Screen name="ChartScreen" component={ChartScreen} />
+        <HomeStack.Screen name="MemoScreen" component={MemoScreen} />
+      </HomeStack.Navigator>
+    </Suspense>
   );
 };
 

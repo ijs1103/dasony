@@ -1,4 +1,7 @@
 import {
+  Alert,
+  Linking,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -12,7 +15,6 @@ import useAuthStore from '@/shared/lib/stores/useAuthStore';
 import showSuccessToast from '@/shared/ui/ToastMessages/SuccessToast';
 import { useLogin } from '@/features/auth/model/useLogin';
 import showErrorToast from '@/shared/ui/ToastMessages/ErrorToast';
-import { useFirebaseMessaging } from '@/shared/lib/hooks/useFirebaseMessaging';
 import { LoginRequest, LoginResponse } from '@/features/auth/types/login';
 import { FORM_ERROR_MESSAGE, REGEX } from '@/shared/utils/constants';
 import usePermissions from '@/shared/lib/hooks/usePermissions';
@@ -32,18 +34,11 @@ const LoginScreen = () => {
     handleLogin,
     setAccessToken,
     setRefreshToken,
+    fcmToken,
     setFcmToken,
     setSerialCode,
+    setPhoneNumber,
   } = useAuthStore();
-  const { fcmToken } = useFirebaseMessaging();
-  const [isFcmTokenReady, setIsFcmTokenReady] = useState(false);
-
-  // FCM 토큰이 준비되었는지 확인
-  useEffect(() => {
-    if (fcmToken) {
-      setIsFcmTokenReady(true);
-    }
-  }, [fcmToken]);
 
   usePermissions();
 
@@ -53,21 +48,44 @@ const LoginScreen = () => {
     formState: { errors, isValid },
   } = useForm<IForm>({ mode: 'onChange' });
 
+  const openSettings = useCallback(() => {
+    Alert.alert(
+      '권한 허용',
+      '정상적인 앱 사용을 위해 알림 권한을 허용해주세요.',
+      [
+        {
+          text: '확인',
+          onPress: () => {
+            if (Platform.OS === 'ios') {
+              Linking.openURL('app-settings:');
+            } else {
+              Linking.openSettings();
+            }
+          },
+        },
+      ],
+    );
+  }, []);
+
   const onValid = useCallback(
     ({ phoneNumber, serialCode }: IForm) => {
-      if (!fcmToken) {
-        return showErrorToast({
-          text: 'FCM 토큰이 아직 준비되지 않았습니다. 잠시 후 다시 시도해주세요.',
-        });
-      }
-      const loginData: LoginRequest = { phoneNumber, serialCode, fcmToken };
+      const tempFcmToken = fcmToken || 'temp_token_' + Date.now().toString();
+
+      const loginData: LoginRequest = {
+        phoneNumber,
+        serialCode,
+        fcmToken: tempFcmToken,
+      };
+
       const onHide = (response: LoginResponse) => {
         setAccessToken(response.accessToken);
         setRefreshToken(response.refreshToken);
-        setFcmToken(fcmToken);
+        setFcmToken(tempFcmToken);
+        setPhoneNumber(phoneNumber);
         setSerialCode(serialCode);
         handleLogin();
       };
+
       loginMutation.mutate(loginData, {
         onSuccess: result => {
           return showSuccessToast({
@@ -88,6 +106,7 @@ const LoginScreen = () => {
       setFcmToken,
       setRefreshToken,
       setSerialCode,
+      setPhoneNumber,
     ],
   );
 
