@@ -16,7 +16,6 @@ import {
 import RootNavigation from './navigation/RootNavigation';
 import useThemeStore from '@/shared/lib/stores/useThemeStore';
 import useAuthStore from '@/shared/lib/stores/useAuthStore';
-import AuthStackNavigator from './navigation/AuthStackNavigator';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useEffect } from 'react';
 import SplashScreen from 'react-native-splash-screen';
@@ -24,6 +23,7 @@ import Toast from 'react-native-toast-message';
 import { QueryProvider } from '@/shared/utils/queryprovider';
 import { TokenManager } from '@/features/auth/model/TokenManager';
 import { useFirebaseMessaging } from '@/shared/lib/hooks/useFirebaseMessaging';
+import AuthGuard from './navigation/AuthGuard';
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: NavigationDefaultTheme,
@@ -67,11 +67,11 @@ const App = () => {
       <SafeAreaProvider>
         <PaperProvider theme={paperTheme}>
           <NavigationContainer theme={paperTheme}>
-            <>
-              {isLoggedIn ? <RootNavigation /> : <AuthStackNavigator />}
-              <TokenManager />
-              <Toast />
-            </>
+            <AuthGuard>
+              <RootNavigation />
+            </AuthGuard>
+            <TokenManager />
+            <Toast />
           </NavigationContainer>
         </PaperProvider>
       </SafeAreaProvider>
