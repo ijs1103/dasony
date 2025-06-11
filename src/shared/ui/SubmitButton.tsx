@@ -5,16 +5,18 @@ interface Props {
   title: string;
   onPress: () => void;
   disabled?: boolean;
+  loading?: boolean;
 }
 
-const SubmitButton = ({ title, onPress, disabled }: Props) => {
+const SubmitButton = ({ title, onPress, disabled, loading }: Props) => {
   return (
     <View style={styles.reportButtonContainer}>
       <Button
         style={[styles.reportButton, { opacity: disabled ? 0.6 : 1 }]}
         textColor="#fff"
         onPress={onPress}
-        disabled={disabled}
+        disabled={disabled || loading}
+        loading={loading}
         mode="contained">
         {title}
       </Button>
