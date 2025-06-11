@@ -5,7 +5,7 @@ import { useRefreshToken } from './useRefreshToken';
 
 export const TokenManager = () => {
   const appState = useRef(AppState.currentState);
-  const validateInterval = useRef<NodeJS.Timeout>();
+  const validateInterval = useRef<NodeJS.Timeout | null>(null);
   const {
     isLoggedIn,
     refreshToken,

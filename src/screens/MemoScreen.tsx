@@ -4,8 +4,9 @@ import { getMemoDate } from '@/features/memo/lib/getMemoDate';
 import useMemoStore from '@/features/memo/model/useMemoStore';
 import ScreenLayout from '@/shared/ui/ScreenLayout';
 import SubmitButton from '@/shared/ui/SubmitButton';
+import showErrorToast from '@/shared/ui/ToastMessages/ErrorToast';
 import showSuccessToast from '@/shared/ui/ToastMessages/SuccessToast';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { StyleSheet, View, TextInput } from 'react-native';
 import uuid from 'react-native-uuid';
 
@@ -14,11 +15,15 @@ const MemoScreen = () => {
   const [content, setContent] = useState('');
   const { data } = useUser();
   const addMemo = useMemoStore(state => state.addMemo);
-  const saveButtonHandler = () => {
+  const saveButtonHandler = useCallback(() => {
+    if (!content.trim()) {
+      showErrorToast({ text: '메모 내용을 입력해주세요.' });
+      return;
+    }
     addMemo({
       id: uuid.v4(),
       guardian: data?.name ?? '보호자',
-      content,
+      content: content.trim(),
       date: getMemoDate(),
     });
     showSuccessToast({
@@ -27,7 +32,7 @@ const MemoScreen = () => {
         navigation.goBack();
       },
     });
-  };
+  }, [content, data?.name]);
   return (
     <ScreenLayout title="메모 작성">
       <View style={styles.subContainer}>
@@ -43,7 +48,7 @@ const MemoScreen = () => {
         <SubmitButton
           title="저장"
           onPress={saveButtonHandler}
-          disabled={content.length === 0}
+          disabled={content.trim().length === 0}
         />
       </View>
     </ScreenLayout>
