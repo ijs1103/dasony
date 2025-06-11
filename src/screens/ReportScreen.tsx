@@ -7,6 +7,7 @@ import LoadingView from '@/shared/ui/LoadingView';
 import MainTitleNavBar from '@/shared/ui/NavigationBars/MainTitleNavBar';
 import ScreenLayout from '@/shared/ui/ScreenLayout';
 import Spacer from '@/shared/ui/Spacer';
+import showErrorToast from '@/shared/ui/ToastMessages/ErrorToast';
 import { useCallback, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 
@@ -23,6 +24,7 @@ const ReportScreen = () => {
       await refetch();
     } catch (error) {
       console.log('데이터 새로고침 중 오류 발생:', error);
+      showErrorToast({ text: '데이터를 불러오는데 실패했습니다.' });
     } finally {
       setRefreshing(false);
     }

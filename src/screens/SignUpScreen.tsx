@@ -35,18 +35,8 @@ const SignUpScreen = () => {
   const onValid = useCallback(
     async ({ name, phoneNumber, serialCode }: IForm) => {
       try {
-        const isValidCode = await new Promise<boolean>((resolve, reject) => {
-          validateCodeMutation.mutate(
-            { serialCode },
-            {
-              onSuccess: result => {
-                resolve(!!result);
-              },
-              onError: () => {
-                reject(new Error('일련번호 검증 실패'));
-              },
-            },
-          );
+        const isValidCode = await validateCodeMutation.mutateAsync({
+          serialCode,
         });
         if (!isValidCode) {
           showErrorToast({ text: '올바르지 않은 일련번호입니다.' });
