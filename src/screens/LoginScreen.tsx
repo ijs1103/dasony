@@ -21,6 +21,7 @@ import usePermissions from '@/shared/lib/hooks/usePermissions';
 import ScreenLayout from '@/shared/ui/ScreenLayout';
 import FormInput from '@/shared/ui/FormInput';
 import SubmitButton from '@/shared/ui/SubmitButton';
+import LoadingView from '@/shared/ui/LoadingView';
 
 interface IForm {
   phoneNumber: string;
@@ -29,6 +30,7 @@ interface IForm {
 
 const LoginScreen = () => {
   const navigation = useAuthStackNavigation();
+  const { isCompleted } = usePermissions();
   const loginMutation = useLogin();
   const {
     handleLogin,
@@ -39,9 +41,6 @@ const LoginScreen = () => {
     setSerialCode,
     setPhoneNumber,
   } = useAuthStore();
-
-  usePermissions();
-
   const {
     control,
     handleSubmit,
@@ -113,6 +112,10 @@ const LoginScreen = () => {
   const navigateToSignup = useCallback(() => {
     navigation.navigate('SignUpScreen');
   }, [navigation]);
+
+  if (!isCompleted) {
+    return <LoadingView />;
+  }
 
   return (
     <ScreenLayout isLogin>

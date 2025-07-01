@@ -4,7 +4,10 @@ import {
   createNativeStackNavigator,
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
-
+import LoginScreen from '@/screens/LoginScreen';
+import SignUpScreen from '@/screens/SignUpScreen';
+import SeniorSignUpScreen from '@/screens/SeniorSignUpScreen';
+import AddressScreen from '@/screens/AddressScreen';
 const AuthStack = createNativeStackNavigator();
 
 type AuthStackParams = {
@@ -21,29 +24,20 @@ export const useAuthStackNavigation = <
 export const useAuthStackRoute = <RouteName extends keyof AuthStackParams>() =>
   useRoute<RouteProp<AuthStackParams, RouteName>>();
 
-const AddressScreenLazy = lazy(() => import('@/screens/AddressScreen'));
-const LoginScreenLazy = lazy(() => import('@/screens/LoginScreen'));
-const SeniorSignUpScreenLazy = lazy(
-  () => import('@/screens/SeniorSignUpScreen'),
-);
-const SignUpScreenLazy = lazy(() => import('@/screens/SignUpScreen'));
-
 export const AuthStackNavigator = () => {
   return (
-    <Suspense fallback={null}>
-      <AuthStack.Navigator
-        screenOptions={{
-          headerShown: false,
-        }}>
-        <AuthStack.Screen name="LoginScreen" component={LoginScreenLazy} />
-        <AuthStack.Screen name="SignUpScreen" component={SignUpScreenLazy} />
-        <AuthStack.Screen
-          name="SeniorSignUpScreen"
-          component={SeniorSignUpScreenLazy}
-        />
-        <AuthStack.Screen name="AddressScreen" component={AddressScreenLazy} />
-      </AuthStack.Navigator>
-    </Suspense>
+    <AuthStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <AuthStack.Screen name="LoginScreen" component={LoginScreen} />
+      <AuthStack.Screen name="SignUpScreen" component={SignUpScreen} />
+      <AuthStack.Screen
+        name="SeniorSignUpScreen"
+        component={SeniorSignUpScreen}
+      />
+      <AuthStack.Screen name="AddressScreen" component={AddressScreen} />
+    </AuthStack.Navigator>
   );
 };
 

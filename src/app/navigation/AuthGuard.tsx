@@ -4,7 +4,6 @@ import AuthStackNavigator from './AuthStackNavigator';
 
 const AuthGuard = ({ children }: PropsWithChildren) => {
   const isLoggedIn = useAuthStore(state => state.isLoggedIn);
-
   if (!isLoggedIn) {
     return <AuthStackNavigator />;
   }

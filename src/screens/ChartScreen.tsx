@@ -27,6 +27,8 @@ const ChartScreen = () => {
 
   const screenWidth = Dimensions.get('window').width;
   const chartWidth = screenWidth - 48 - 48;
+  const screenHeight = Dimensions.get('window').height;
+  const chartHeight = Math.max(220, Math.min(320, screenHeight * 0.35));
 
   const [value, setValue] = useState<ChartType>(DAILY);
   const { data: dailyData, isLoading: dailyLoading } = useDaily();
@@ -150,7 +152,7 @@ const ChartScreen = () => {
           <BarChart
             isAnimated
             data={getChartData()}
-            height={320}
+            height={chartHeight}
             // bar
             initialSpacing={0} // 초기 간격
             spacing={getBarSpacing()} // bar 간격
@@ -214,6 +216,7 @@ const styles = StyleSheet.create({
     gap: 32,
     backgroundColor: '#fff',
     padding: 24,
+    paddingBottom: 48,
     borderRadius: 12,
     overflow: 'hidden',
     ...Platform.select({
