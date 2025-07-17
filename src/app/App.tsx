@@ -23,7 +23,7 @@ import Toast from 'react-native-toast-message';
 import { QueryProvider } from '@/shared/utils/queryprovider';
 import { TokenManager } from '@/features/auth/model/TokenManager';
 import { useFirebaseMessaging } from '@/shared/lib/hooks/useFirebaseMessaging';
-import AuthGuard from './navigation/AuthGuard';
+import AuthStackNavigator from './navigation/AuthStackNavigator';
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: NavigationDefaultTheme,
@@ -67,10 +67,14 @@ const App = () => {
       <SafeAreaProvider>
         <PaperProvider theme={paperTheme}>
           <NavigationContainer theme={paperTheme}>
-            <AuthGuard>
-              <RootNavigation />
-            </AuthGuard>
-            <TokenManager />
+            {isLoggedIn ? (
+              <>
+                <RootNavigation />
+                <TokenManager />
+              </>
+            ) : (
+              <AuthStackNavigator />
+            )}
             <Toast />
           </NavigationContainer>
         </PaperProvider>
