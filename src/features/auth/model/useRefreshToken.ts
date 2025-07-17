@@ -27,5 +27,8 @@ export const refreshToken = async (
 export const useRefreshToken = () => {
   return useMutation({
     mutationFn: (data: RefreshTokenRequest) => refreshToken(data),
+    // 재시도 로직 추가
+    retry: 3,
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000), // 재시도 간격 - Exponential Backoff
   });
 };
